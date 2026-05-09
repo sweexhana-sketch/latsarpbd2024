@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login — SIMLATSAR CPNS Papua Barat Daya</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.8.0/dist/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100vh;display:flex;overflow:hidden}
+.left{flex:1;background:linear-gradient(135deg,#042C53 0%,#0C447C 50%,#1a1040 100%);display:flex;flex-direction:column;justify-content:center;padding:80px;position:relative;overflow:hidden}
+.left::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(239,159,39,0.15),transparent 70%);top:-100px;right:-100px}
+.left::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(55,138,221,0.1),transparent 70%);bottom:-100px;left:-50px}
+.left-content{position:relative;z-index:1}
+.left h1{font-size:52px;font-weight:800;line-height:1.1;margin-bottom:24px}
+.left h1 span{color:#EF9F27}
+.left p{font-size:17px;color:rgba(255,255,255,0.7);line-height:1.7;max-width:460px;margin-bottom:40px}
+.features{display:flex;flex-direction:column;gap:16px}
+.feat{display:flex;align-items:center;gap:12px;font-size:14px;color:rgba(255,255,255,0.8)}
+.feat i{width:32px;height:32px;background:rgba(239,159,39,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#EF9F27;font-size:16px;flex-shrink:0}
+.right{width:460px;background:#0D1529;display:flex;flex-direction:column;justify-content:center;padding:60px;border-left:1px solid rgba(255,255,255,0.08)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:48px}
+.brand-icon{width:44px;height:44px;background:linear-gradient(135deg,#0C447C,#EF9F27);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.brand-name{font-size:15px;font-weight:700}
+.brand-sub{font-size:11px;color:#8B9EC7;margin-top:2px}
+.form-title{font-size:26px;font-weight:700;margin-bottom:8px}
+.form-sub{font-size:13px;color:#8B9EC7;margin-bottom:36px}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#8B9EC7;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em}
+.input-wrap{position:relative}
+.input-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#5A6E99;font-size:18px}
+.input-wrap input{width:100%;background:#162040;border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#F0F4FF;font-family:'Inter',sans-serif;font-size:14px;padding:13px 14px 13px 46px;outline:none;transition:border-color .2s}
+.input-wrap input:focus{border-color:#EF9F27;background:#1a2a50}
+.btn-login{width:100%;background:linear-gradient(135deg,#EF9F27,#F7C56A);color:#042C53;border:none;border-radius:10px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;padding:14px;cursor:pointer;transition:.2s;margin-top:10px}
+.btn-login:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(239,159,39,0.3)}
+.btn-login:disabled{opacity:0.6;transform:none;cursor:not-allowed}
+.error-box{background:rgba(226,75,74,0.1);border:1px solid rgba(226,75,74,0.25);border-radius:10px;padding:12px 16px;font-size:13px;color:#FF8080;margin-bottom:20px;display:none;align-items:center;gap:8px}
+.hint{margin-top:28px;padding:16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px}
+.hint p{font-size:12px;color:#5A6E99;line-height:1.6}
+.hint strong{color:#8B9EC7}
+@media(max-width:900px){.left{display:none}.right{width:100%}}
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="left-content">
+    <h1>SIMLATSAR<br><span>Papua Barat Daya</span></h1>
+    <p>Sistem Informasi Manajemen Pelaksanaan Latihan Dasar CPNS — BKPSDM Provinsi Papua Barat Daya, Formasi 2024.</p>
+    <div class="features">
+      <div class="feat"><i class="ti ti-users"></i>100+ Data Peserta — 26 Angkatan — 7 Gelombang</div>
+      <div class="feat"><i class="ti ti-calendar"></i>Jadwal Lengkap Mei – September 2026</div>
+      <div class="feat"><i class="ti ti-files"></i>Manajemen Dokumen & Upload Berkas</div>
+      <div class="feat"><i class="ti ti-chart-bar"></i>Monitoring & Statistik Real-time</div>
+    </div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="brand">
+    <div class="brand-icon" style="background: none;"><img src="/assets/img/logo-pbd.png" alt="Logo Papua Barat Daya" style="width: 100%; height: 100%; object-fit: contain;"></div>
+    <div>
+      <div class="brand-name">SIMLATSAR PBD</div>
+      <div class="brand-sub">Provinsi Papua Barat Daya</div>
+    </div>
+  </div>
+
+  <div class="form-title">Masuk ke Sistem</div>
+  <div class="form-sub">Gunakan NIP sebagai username dan password</div>
+
+  <div class="error-box" id="err"><i class="ti ti-alert-circle"></i><span id="err-msg"></span></div>
+
+  <form id="form">
+    <div class="form-group">
+      <label>Username / NIP</label>
+      <div class="input-wrap">
+        <i class="ti ti-user"></i>
+        <input type="text" id="username" placeholder="Contoh: admin" autocomplete="username" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <i class="ti ti-lock"></i>
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+    </div>
+    <button type="submit" class="btn-login" id="btn">Masuk ke Sistem</button>
+  </form>
+
+  <div class="hint">
+    <p><strong>Panduan Login Demo:</strong><br>
+    • Username: <strong>admin</strong><br>
+    • Password: <strong>admin2026</strong><br>
+    <br>
+    <small><em>(Pastikan tidak tertukar: admin adalah username, admin2026 adalah password)</em></small>
+  </div>
+</div>
+
+<script>
+  if (localStorage.getItem('token')) {
+    window.location.href = 'simlatsar_papua_barat_daya.html';
+  }
+
+  document.getElementById('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('btn');
+    const errBox = document.getElementById('err');
+    const errMsg = document.getElementById('err-msg');
+    
+    btn.disabled = true;
+    btn.textContent = 'Memproses...';
+    errBox.style.display = 'none';
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('username').value.trim(),
+          password: document.getElementById('password').value
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login gagal');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      window.location.href = 'simlatsar_papua_barat_daya.html';
+    } catch (err) {
+      errMsg.textContent = err.message;
+      errBox.style.display = 'flex';
+      btn.disabled = false;
+      btn.textContent = 'Masuk ke Sistem';
+    }
+  });
+</script>
+</body>
+</html>

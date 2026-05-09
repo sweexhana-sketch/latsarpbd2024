@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIMLATSAR CPNS 2024 — BKPSDM Provinsi Papua Barat Daya</title>
+<meta name="description" content="Sistem Informasi Manajemen Pelaksanaan Latsar CPNS Provinsi Papua Barat Daya — 26 Angkatan, 7 Gelombang, Tahun 2026">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.8.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">🏛️</div>
+      <div class="brand-text">
+        <div class="brand-name">SIMLATSAR CPNS</div>
+        <div class="brand-sub">Papua Barat Daya</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Menu Utama</div>
+      <a class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard',this)">
+        <i class="ti ti-layout-dashboard"></i><span>Dashboard</span>
+      </a>
+      <a class="nav-item" id="nav-peserta" onclick="showPage('peserta',this)">
+        <i class="ti ti-users"></i><span>Data Peserta</span>
+        <span class="badge-count">${PESERTA ? PESERTA.length : ''}</span>
+      </a>
+      <a class="nav-item" id="nav-jadwal" onclick="showPage('jadwal',this)">
+        <i class="ti ti-calendar"></i><span>Jadwal Latsar</span>
+      </a>
+      <div class="nav-section-title">Administrasi</div>
+      <a class="nav-item" id="nav-dokumen" onclick="showPage('dokumen',this)">
+        <i class="ti ti-files"></i><span>Dokumen CPNS</span>
+      </a>
+      <a class="nav-item" id="nav-materi" onclick="showPage('materi',this)">
+        <i class="ti ti-book"></i><span>Materi Latsar</span>
+      </a>
+      <a class="nav-item" id="nav-monitoring" onclick="showPage('monitoring',this)">
+        <i class="ti ti-chart-line"></i><span>Monitoring</span>
+      </a>
+      <div class="nav-section-title">Lainnya</div>
+      <a class="nav-item" id="nav-laporan" onclick="showPage('laporan',this)">
+        <i class="ti ti-report"></i><span>Laporan</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item" style="font-size:11px;color:var(--text3)">
+        <i class="ti ti-info-circle"></i><span>BKPSDM Prov. PBD v1.0</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="toggle-btn" onclick="toggleSidebar()"><i class="ti ti-menu-2"></i></button>
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub">Kerjasama PUSJAR SKMP · Formasi 2024</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="topbar-date"></div>
+        <div class="avatar" style="cursor:pointer" onclick="logout()" title="Logout"><i class="ti ti-logout"></i></div>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="content-area">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page active" id="page-dashboard">
+        <div class="alert alert-warning">
+          <i class="ti ti-bell-ringing"></i>
+          <span>Latsar CPNS <strong>Gelombang 1</strong> dimulai <strong>11 Mei 2026</strong>. Pastikan pemberkasan selesai sebelum <strong>13 Mei 2026</strong>.</span>
+        </div>
+
+        <div class="metric-grid">
+          <div class="metric-card blue">
+            <div class="metric-icon blue"><i class="ti ti-users"></i></div>
+            <div class="metric-value" id="m-peserta">100</div>
+            <div class="metric-label">Total Peserta CPNS</div>
+            <div class="metric-change up"><i class="ti ti-arrow-up-right"></i> Formasi 2024</div>
+          </div>
+          <div class="metric-card gold">
+            <div class="metric-icon gold"><i class="ti ti-layers-linked"></i></div>
+            <div class="metric-value">26</div>
+            <div class="metric-label">Total Angkatan</div>
+            <div class="metric-change up"><i class="ti ti-calendar"></i> Mei – Sep 2026</div>
+          </div>
+          <div class="metric-card green">
+            <div class="metric-icon green"><i class="ti ti-wave-sine"></i></div>
+            <div class="metric-value">7</div>
+            <div class="metric-label">Gelombang Latsar</div>
+            <div class="metric-change up"><i class="ti ti-clock"></i> 3 bulan pelaksanaan</div>
+          </div>
+          <div class="metric-card red">
+            <div class="metric-icon red"><i class="ti ti-award"></i></div>
+            <div class="metric-value">60</div>
+            <div class="metric-label">Hari / Angkatan</div>
+            <div class="metric-change up"><i class="ti ti-book"></i> JP Pembelajaran</div>
+          </div>
+          <div class="metric-card purple">
+            <div class="metric-icon purple"><i class="ti ti-building-community"></i></div>
+            <div class="metric-value">1</div>
+            <div class="metric-label">Lembaga Penyelenggara</div>
+            <div class="metric-change up"><i class="ti ti-map-pin"></i> BKPSDM Prov. PBD</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="ti ti-timeline"></i> Garis Waktu Seluruh Gelombang</div>
+          </div>
+          <div class="timeline-container">
+            <div class="timeline-grid">
+              <div class="tl-header">
+                <div></div>
+                <div class="tl-months" id="tl-months"></div>
+              </div>
+              <div id="tl-rows"></div>
+            </div>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#378ADD"></div>MOOC</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>Distance Learning</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#EF9F27"></div>Off Campus</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Evaluasi</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-donut"></i> Distribusi per Gelombang</div>
+            <div style="position:relative;height:200px;margin-top:16px">
+              <canvas id="donut-dash"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-calendar-event"></i> Jadwal Pemberkasan Terdekat</div>
+            <div style="margin-top:16px" id="next-berkasan"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PESERTA ===== -->
+      <div class="page" id="page-peserta">
+        <div class="page-header">
+          <h1>Data Peserta Latsar CPNS</h1>
+          <p>Daftar lengkap peserta CPNS Formasi 2024 Provinsi Papua Barat Daya</p>
+        </div>
+        <div class="search-row">
+          <input class="search-input" id="search-name" type="text" placeholder="🔍  Cari nama atau NIP..." oninput="filterPeserta()">
+          <select class="select-input" id="filter-gel" onchange="filterPeserta()"><option value="">Semua Gelombang</option></select>
+          <select class="select-input" id="filter-ang" onchange="filterPeserta()"><option value="">Semua Angkatan</option></select>
+          <select class="select-input" id="filter-gol" onchange="filterPeserta()"><option value="">Semua Golongan</option></select>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:12px" id="peserta-count"></div>
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Nama Lengkap</th><th>NIP</th><th>Pangkat/Gol</th><th>Gelombang</th><th>Angkatan</th></tr></thead>
+              <tbody id="peserta-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:12px" id="peserta-more"></div>
+      </div>
+
+      <!-- ===== JADWAL ===== -->
+      <div class="page" id="page-jadwal">
+        <div class="page-header">
+          <h1>Jadwal Lengkap Latsar CPNS 2026</h1>
+          <p>7 Gelombang · 26 Angkatan · Mei s.d. September 2026</p>
+        </div>
+        <div class="chip-row" id="jadwal-chips">
+          <button class="chip active" onclick="filterJadwal('all',this)">Semua</button>
+          <button class="chip" onclick="filterJadwal('1',this)">Gelombang 1</button>
+          <button class="chip" onclick="filterJadwal('2',this)">Gelombang 2</button>
+          <button class="chip" onclick="filterJadwal('3',this)">Gelombang 3</button>
+          <button class="chip" onclick="filterJadwal('4',this)">Gelombang 4</button>
+          <button class="chip" onclick="filterJadwal('5',this)">Gelombang 5</button>
+          <button class="chip" onclick="filterJadwal('6',this)">Gelombang 6</button>
+          <button class="chip" onclick="filterJadwal('7',this)">Gelombang 7</button>
+        </div>
+        <div id="jadwal-list"></div>
+      </div>
+
+      <!-- ===== DOKUMEN ===== -->
+      <div class="page" id="page-dokumen">
+        <div class="page-header">
+          <h1>Persyaratan Dokumen CPNS</h1>
+          <p>Kelola dan upload berkas administrasi peserta Latsar</p>
+        </div>
+        <div class="alert alert-info">
+          <i class="ti ti-info-circle"></i>
+          <span>Semua dokumen <strong>wajib</strong> diupload sebelum tanggal pemberkasan masing-masing gelombang.</span>
+        </div>
+        <div class="chip-row" id="dok-chips">
+          <button class="chip active" onclick="filterDok('all',this)">Semua Dokumen</button>
+          <button class="chip" onclick="filterDok('wajib',this)">Wajib</button>
+          <button class="chip" onclick="filterDok('pendukung',this)">Pendukung</button>
+          <button class="chip" onclick="filterDok('akademik',this)">Akademik</button>
+        </div>
+        <div class="doc-grid" id="dok-grid"></div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-cloud-upload"></i> Upload Berkas Peserta</div>
+          <div class="search-row" style="margin-top:16px">
+            <select class="select-input" id="upload-ang" style="flex:1"><option value="">— Pilih Angkatan —</option></select>
+            <input class="search-input" id="upload-nip" type="text" placeholder="Masukkan NIP peserta" style="flex:1">
+          </div>
+          <div class="upload-zone" onclick="simulUpload()">
+            <div class="upload-icon"><i class="ti ti-cloud-upload"></i></div>
+            <div class="upload-title">Klik atau seret berkas ke sini</div>
+            <div class="upload-sub">PDF, JPG, PNG — Maks. 5 MB per berkas</div>
+          </div>
+          <div id="upload-feedback" style="display:none">
+            <div class="feedback-success"><i class="ti ti-circle-check"></i><span id="upload-msg"></span></div>
+            <div class="progress-bar"><div class="progress-fill" id="upload-prog" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-calendar-check"></i> Jadwal Pemberkasan per Gelombang</div>
+          <div class="table-wrap" style="margin-top:16px">
+            <table>
+              <thead><tr><th>Gelombang</th><th>Angkatan</th><th>Mulai Latsar</th><th>Periode Pemberkasan</th><th>Status</th></tr></thead>
+              <tbody id="berkasan-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MATERI ===== -->
+      <div class="page" id="page-materi">
+        <div class="page-header">
+          <h1>Materi & Panduan Latsar</h1>
+          <p>Unduh dokumen panduan dan materi pelatihan dasar CPNS 2024/2026</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-file-type-pdf"></i> CPNS Pelatihan Dasar (LATSAR) 2024</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Panduan teknis pelaksanaan LATSAR CPNS Formasi 2024.</p>
+            <div style="margin-top:16px;display:flex;gap:10px">
+               <span class="badge badge-gray">1.3 MB</span>
+               <a href="LATSAR/CPNS PELATIHAN DASAR (LATSAR) 2024.pdf" target="_blank" class="btn btn-primary"><i class="ti ti-download"></i> Lihat PDF</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-file-type-pdf"></i> Jadwal Latsar</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Rincian jadwal harian dan mingguan pelaksanaan pelatihan.</p>
+            <div style="margin-top:16px;display:flex;gap:10px">
+               <span class="badge badge-gray">204 KB</span>
+               <a href="LATSAR/JADWAL LATSAR.pdf" target="_blank" class="btn btn-primary"><i class="ti ti-download"></i> Lihat PDF</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-file-type-pdf"></i> Master Jadwal Kerjasama 2026</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Master jadwal kegiatan kerjasama dengan PUSJAR SKMP.</p>
+            <div style="margin-top:16px;display:flex;gap:10px">
+               <span class="badge badge-gray">626 KB</span>
+               <a href="LATSAR/Master Jadwal Kegiatan Kerjasama 2026.pdf" target="_blank" class="btn btn-primary"><i class="ti ti-download"></i> Lihat PDF</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MONITORING ===== -->
+      <div class="page" id="page-monitoring">
+        <div class="page-header">
+          <h1>Monitoring & Statistik Latsar</h1>
+          <p>Pantau progres pelaksanaan Latsar CPNS Papua Barat Daya 2026</p>
+        </div>
+        <div class="metric-grid">
+          <div class="metric-card blue"><div class="metric-icon blue"><i class="ti ti-users"></i></div>
+            <div class="metric-value" id="mon-total"></div><div class="metric-label">Total Peserta Terdata</div></div>
+          <div class="metric-card gold"><div class="metric-icon gold"><i class="ti ti-layers-linked"></i></div>
+            <div class="metric-value">26</div><div class="metric-label">Total Angkatan</div></div>
+          <div class="metric-card green"><div class="metric-icon green"><i class="ti ti-clock"></i></div>
+            <div class="metric-value">60</div><div class="metric-label">Hari per Angkatan</div></div>
+          <div class="metric-card red"><div class="metric-icon red"><i class="ti ti-wave-sine"></i></div>
+            <div class="metric-value">7</div><div class="metric-label">Gelombang Aktif</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-bar"></i> Peserta per Angkatan</div>
+          <div style="position:relative;height:260px;margin-top:16px"><canvas id="chart-bar"></canvas></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-donut"></i> Proporsi Golongan</div>
+            <div style="position:relative;height:220px;margin-top:16px"><canvas id="chart-pie"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-donut-2"></i> Distribusi per Gelombang</div>
+            <div style="position:relative;height:220px;margin-top:16px"><canvas id="chart-donut2"></canvas></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-clipboard-check"></i> Checklist Tahapan Evaluasi per Gelombang</div>
+          <div class="table-wrap" style="margin-top:16px">
+            <table>
+              <thead><tr><th>Gelombang</th><th>Angkatan</th><th>MOOC</th><th>Distance Learning</th><th>Off Campus</th><th>Evaluasi Akhir</th><th>Penutupan</th></tr></thead>
+              <tbody id="check-tbody"></tbody>
+            </table>
+          </div>
+          <div class="legend" style="margin-top:12px">
+            <div class="legend-item"><i class="ti ti-circle-check" style="color:#1D9E75"></i>&nbsp;Selesai</div>
+            <div class="legend-item"><i class="ti ti-clock" style="color:#EF9F27"></i>&nbsp;Berlangsung</div>
+            <div class="legend-item"><i class="ti ti-circle-dashed" style="color:#5A6E99"></i>&nbsp;Belum Dimulai</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LAPORAN ===== -->
+      <div class="page" id="page-laporan">
+        <div class="page-header">
+          <h1>Laporan Pelaksanaan Latsar</h1>
+          <p>Cetak dan ekspor laporan administrasi Latsar CPNS</p>
+        </div>
+        <div class="grid-2">
+          <div class="card" style="cursor:pointer" onclick="alert('Fitur cetak laporan akan segera tersedia.')">
+            <div class="card-title"><i class="ti ti-file-text"></i> Rekap Peserta per Gelombang</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Daftar lengkap peserta dikelompokkan per gelombang dan angkatan</p>
+            <button class="btn btn-primary" style="margin-top:16px"><i class="ti ti-download"></i> Unduh PDF</button>
+          </div>
+          <div class="card" style="cursor:pointer" onclick="alert('Fitur cetak laporan akan segera tersedia.')">
+            <div class="card-title"><i class="ti ti-table"></i> Rekap Dokumen Peserta</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Status kelengkapan dokumen seluruh peserta dalam format tabel</p>
+            <button class="btn btn-primary" style="margin-top:16px"><i class="ti ti-download"></i> Unduh Excel</button>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-calendar-stats"></i> Laporan Jadwal & Timeline</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Jadwal lengkap 7 gelombang beserta fase MOOC, DL, dan Off Campus</p>
+            <button class="btn btn-primary" style="margin-top:16px"><i class="ti ti-download"></i> Unduh PDF</button>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-bar"></i> Laporan Statistik</div>
+            <p style="font-size:12px;color:var(--text2);margin-top:8px">Grafik distribusi peserta, golongan, dan progres pelaksanaan</p>
+            <button class="btn btn-primary" style="margin-top:16px"><i class="ti ti-download"></i> Unduh PDF</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+// Fix nav badge & next berkasan after data loads
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#nav-peserta .badge-count').textContent = PESERTA.length;
+  document.getElementById('m-peserta').textContent = PESERTA.length;
+  document.getElementById('mon-total').textContent = PESERTA.length;
+
+  // Next berkasan panel
+  const nb = document.getElementById('next-berkasan');
+  nb.innerHTML = WAVES.slice(0,4).map(w => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:var(--border);font-size:13px">
+      <span style="color:var(--text2)">${w.label} (Ang. ${w.angkatan})</span>
+      <span style="font-weight:600">${w.pemberkasan}</span>
+    </div>`).join('') + `<div style="font-size:11px;color:var(--text3);margin-top:8px">Gelombang 5–7 menyusul setelah jadwal konfirmasi</div>`;
+});
+</script>
+</body>
+</html>
