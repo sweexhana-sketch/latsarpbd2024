@@ -333,6 +333,28 @@
 
             <!-- DOKUMEN -->
             <div class="page" id="page-dokumen">
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-title"><i class="ti ti-user-check"></i> Form Data Diri (Wajib)</div>
+                    <div class="card-desc" style="font-size: 12px; color: var(--text2); margin-bottom: 16px;">Lengkapi data isian sesuai form registrasi online sebelum mengunggah dokumen persyaratan.</div>
+                    <form id="form-biodata" onsubmit="saveBiodata(event)">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email</label>
+                                <input type="email" id="bio-email" class="input-box" required placeholder="Masukkan alamat email">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
+                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM (Disingkat)">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WA)</label>
+                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-save-bio"><i class="ti ti-device-floppy"></i> Simpan Data Diri</button>
+                    </form>
+                </div>
+
                 <div class="doc-toolbar" id="doc-toolbar">
                     <!-- Diisi dinamis oleh JS -->
                 </div>
@@ -368,14 +390,12 @@
     ];
 
     const DOCS = [
-        {name:'SK CPNS / Nota Persetujuan BKN', cat:'required', desc:'Surat Keputusan pengangkatan sebagai CPNS dari BKN.'},
-        {name:'SK Penempatan / Tugas', cat:'required', desc:'SK yang menyatakan unit kerja penempatan.'},
-        {name:'Surat Pengantar Instansi', cat:'required', desc:'Surat resmi dari instansi pengirim.'},
-        {name:'Foto Resmi 4×6 (Background Merah)', cat:'required', desc:'Pas foto terbaru berpakaian dinas.'},
-        {name:'KTP / Kartu Identitas', cat:'required', desc:'Kartu Tanda Penduduk yang masih berlaku.'},
-        {name:'Ijazah Terakhir (Legalisir)', cat:'required', desc:'Ijazah pendidikan terakhir yang dilegalisir.'},
-        {name:'Surat Keterangan Sehat', cat:'optional', desc:'Dari rumah sakit pemerintah / puskesmas.'},
-        {name:'Daftar Riwayat Hidup (DRH)', cat:'required', desc:'DRH sesuai format BKN.'}
+        {name:'SK CPNS', cat:'required', desc:'Dokumen SK CPNS (Format PDF).'},
+        {name:'SPMT', cat:'required', desc:'Surat Pernyataan Melaksanakan Tugas (Format PDF).'},
+        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi dari instansi/OPD (Format PDF).'},
+        {name:'Surat Pernyataan Mengikuti Latsar', cat:'required', desc:'Wajib bermaterai 10000 (Format PDF).'},
+        {name:'KTP', cat:'required', desc:'Kartu Tanda Penduduk (Format Gambar).'},
+        {name:'PAS FOTO (4X6)', cat:'optional', desc:'Pas foto terbaru (Format Gambar).'}
     ];
 
     async function checkAuth() {
@@ -540,6 +560,51 @@
         setTimeout(() => t.remove(), 4000);
     }
 
+    // ── SAVE BIODATA ─────────────────────────────────────────────────────────
+    async function saveBiodata(e) {
+        e.preventDefault();
+        const user = JSON.parse(localStorage.getItem('user'));
+        const isAdmin = user.role === 'admin';
+        const targetNip = isAdmin ? _selectedNip : user.username;
+        
+        if (!targetNip) return showToast('Pilih peserta terlebih dahulu', 'error');
+
+        const email = document.getElementById('bio-email').value;
+        const instansi = document.getElementById('bio-instansi').value;
+        const no_hp = document.getElementById('bio-hp').value;
+        const btn = document.getElementById('btn-save-bio');
+
+        try {
+            btn.innerHTML = `<i class="ti ti-loader" style="animation: spin 1s linear infinite"></i> Menyimpan...`;
+            btn.disabled = true;
+
+            const res = await apiFetch('/peserta/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nip: targetNip, email, instansi, no_hp })
+            });
+
+            if (res.error) throw new Error(res.error);
+            showToast('Data diri berhasil disimpan', 'success');
+
+            // Update local cache
+            if (isAdmin && _allPeserta.length > 0) {
+                const idx = _allPeserta.findIndex(p => p.nip.replace(/\s+/g,'') === targetNip);
+                if (idx !== -1) {
+                    _allPeserta[idx].email = email;
+                    _allPeserta[idx].instansi = instansi;
+                    _allPeserta[idx].no_hp = no_hp;
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            showToast(err.message || 'Gagal menyimpan data diri', 'error');
+        } finally {
+            btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Data Diri`;
+            btn.disabled = false;
+        }
+    }
+
     // ── DOCS ─────────────────────────────────────────────────────────────────
     let _allPeserta = [];
     let _selectedNip = '';
@@ -572,10 +637,29 @@
 
         const nipToQuery = isAdmin ? _selectedNip : user.username;
         let uploadedDocs = [];
+        let pData = null;
+
         if (nipToQuery) {
             const res = await apiFetch(`/dokumen?nip=${nipToQuery}`);
             uploadedDocs = Array.isArray(res) ? res : [];
+            
+            // Get participant details for the form
+            if (isAdmin) {
+                pData = _allPeserta.find(p => p.nip.replace(/\s+/g,'') === nipToQuery);
+            } else {
+                if (_allPeserta.length === 0) {
+                    const ps = await apiFetch(`/peserta?q=${nipToQuery}`);
+                    if (ps.data && ps.data.length > 0) pData = ps.data[0];
+                } else {
+                    pData = _allPeserta.find(p => p.nip.replace(/\s+/g,'') === nipToQuery);
+                }
+            }
         }
+
+        // Fill bio form
+        document.getElementById('bio-email').value = pData && pData.email ? pData.email : '';
+        document.getElementById('bio-instansi').value = pData && pData.instansi ? pData.instansi : '';
+        document.getElementById('bio-hp').value = pData && pData.no_hp ? pData.no_hp : '';
 
         const safeId = (name) => btoa(unescape(encodeURIComponent(name))).replace(/[^a-zA-Z0-9]/g,'');
 
