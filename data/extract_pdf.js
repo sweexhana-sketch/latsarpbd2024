@@ -67,11 +67,11 @@ function parseParticipants(text) {
 
         // Name = before NIP, strip leading row number
         const beforeNip = line.substring(0, line.indexOf(nipMatch[0])).trim();
-        let name = beforeNip.replace(/^\d+[\.\)\s]+/, '').trim();
+        let name = beforeNip.replace(/^\d+[\.\)\s]*/, '').trim();
 
         // If name is empty, check previous line
         if (!name && i > 0) {
-            const prev = lines[i - 1].replace(/^\d+[\.\)\s]+/, '').trim();
+            const prev = lines[i - 1].replace(/^\d+[\.\)\s]*/, '').trim();
             if (prev.length > 2 && !skipWords.test(prev) && !prev.match(nipPattern)) {
                 name = prev;
             }
