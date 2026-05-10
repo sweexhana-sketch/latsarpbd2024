@@ -277,7 +277,7 @@
                 
                 <div class="card">
                     <div class="card-header" style="justify-content: space-between; display: flex;">
-                        <div class="card-title"><i class="ti ti-users"></i> Cuplikan Data Pegawai (Peserta)</div>
+                        <div class="card-title" id="dashboard-table-title"><i class="ti ti-users"></i> Cuplikan Data Pegawai (Peserta)</div>
                         <button class="btn btn-primary" onclick="showPage('peserta', document.getElementById('menu-peserta'))">Lihat Seluruh Data</button>
                     </div>
                     <div class="table-wrap">
@@ -558,9 +558,26 @@
         const participantResult = await apiFetch('/peserta?limit=1000');
         const allParticipants = participantResult.data || [];
         
-        // Render 5 participants snippet to dashboard
+        // Render participants snippet to dashboard based on role
         const dashBody = document.getElementById('dashboard-peserta-list');
-        dashBody.innerHTML = allParticipants.slice(0, 5).map((p, index) => `
+        const user = JSON.parse(localStorage.getItem('user'));
+        const isAdmin = user && user.role === 'admin';
+        
+        const titleEl = document.getElementById('dashboard-table-title');
+        const btnEl = titleEl.nextElementSibling;
+        
+        let snippetData = [];
+        if (isAdmin) {
+            snippetData = allParticipants.slice(0, 5);
+            titleEl.innerHTML = `<i class="ti ti-users"></i> Cuplikan Data Pegawai (Peserta)`;
+            btnEl.innerText = `Lihat Seluruh Data`;
+        } else {
+            snippetData = allParticipants.filter(p => p.nip.replace(/\s+/g, '') === user.username);
+            titleEl.innerHTML = `<i class="ti ti-user"></i> Data Profil Anda`;
+            btnEl.innerText = `Buka Profil`;
+        }
+
+        dashBody.innerHTML = snippetData.map((p, index) => `
             <tr>
                 <td>${index + 1}</td>
                 <td style="font-weight:600">${p.nama}</td>
@@ -569,6 +586,10 @@
                 <td><span class="badge badge-green">Gel. ${p.gelombang}</span></td>
             </tr>
         `).join('');
+
+        if (snippetData.length === 0 && !isAdmin) {
+            dashBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text2)">Data profil Anda tidak ditemukan.</td></tr>`;
+        }
 
         const golMap = {};
         allParticipants.forEach(p => { golMap[p.golongan] = (golMap[p.golongan] || 0) + 1; });
