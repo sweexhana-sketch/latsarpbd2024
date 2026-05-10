@@ -39,7 +39,7 @@ function parseParticipants(text) {
     const nipSet = new Set();
     let currentAngkatan = 1;
 
-    const nipPattern = /(\d{8}\s+\d{6}\s+\d\s+\d{3})/;
+    const nipPattern = /(\d{8})\s*(\d{6})\s*(\d)\s*(\d{3})/;
     const angkatanPattern = /ANGKATAN\s+.*?\(([IVX]+)\)/i;
     const skipWords = /^(NO|NAMA|NIP|PANGKAT|GOLONGAN|GEL|ANGKATAN|HALAMAN|PAGE|LATSAR|CPNS|BKPSDM|PROVINSI|PAPUA)$/i;
 
@@ -57,33 +57,37 @@ function parseParticipants(text) {
             continue;
         }
 
-        // Detect NIP
+        // Detect NIP (18 digits with optional spaces)
         const nipMatch = line.match(nipPattern);
         if (!nipMatch) continue;
 
-        const nip = nipMatch[1].trim();
+        const nip = `${nipMatch[1]} ${nipMatch[2]} ${nipMatch[3]} ${nipMatch[4]}`;
         const cleanNip = nip.replace(/\s+/g, '');
         if (nipSet.has(cleanNip)) continue;
 
-        // Name = before NIP, strip leading row number
-        const beforeNip = line.substring(0, line.indexOf(nipMatch[0])).trim();
-        let name = beforeNip.replace(/^\d+[\.\)\s]*/, '').trim();
+        // Name = text before the first digit of NIP
+        const nipIndex = line.search(/\d{8}/);
+        let name = line.substring(0, nipIndex).trim();
+        name = name.replace(/^\d+[\.\)\s]*/, '').trim();
 
         // If name is empty, check previous line
         if (!name && i > 0) {
             const prev = lines[i - 1].replace(/^\d+[\.\)\s]*/, '').trim();
-            if (prev.length > 2 && !skipWords.test(prev) && !prev.match(nipPattern)) {
+            if (prev.length > 2 && !skipWords.test(prev) && !prev.match(/\d{18}/)) {
                 name = prev;
             }
         }
 
-        // Golongan = text after NIP
-        const afterNip = line.substring(line.indexOf(nipMatch[0]) + nipMatch[0].length).trim();
+        // Golongan = text after the 18 digits of NIP
+        // The NIP match might contain spaces, so find where it ends
+        const fullNipMatch = nipMatch[0];
+        const afterNip = line.substring(line.indexOf(fullNipMatch) + fullNipMatch.length).trim();
+        
         let golongan = 'PENATA MUDA III/a';
-        const golMatch = afterNip.match(/(PENATA MUDA TINGKAT I|PENATA MUDA|PENATA TINGKAT I|PENATA|PENGATUR MUDA TINGKAT I|PENGATUR MUDA|PENGATUR TINGKAT I|PENGATUR)/i);
+        const golMatch = (afterNip + line).match(/(PENATA MUDA TINGKAT I|PENATA MUDA|PENATA TINGKAT I|PENATA|PENGATUR MUDA TINGKAT I|PENGATUR MUDA|PENGATUR TINGKAT I|PENGATUR)/i);
         if (golMatch) {
             golongan = golMatch[0].trim().toUpperCase();
-            const gradeMatch = afterNip.match(/(III\/[ab]|II\/[abcd])/i);
+            const gradeMatch = (afterNip + line).match(/(III\/[ab]|II\/[abcd])/i);
             if (gradeMatch) golongan += ' ' + gradeMatch[1].toUpperCase();
         }
 
