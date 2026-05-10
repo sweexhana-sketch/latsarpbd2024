@@ -65,8 +65,13 @@ body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100v
     </div>
   </div>
 
-  <div class="form-title">Masuk ke Sistem</div>
-  <div class="form-sub">Gunakan NIP sebagai username dan password</div>
+  <div class="form-title" id="form-title-text">Masuk ke Sistem</div>
+  <div class="form-sub" id="form-sub-text">Silakan masukkan kredensial Anda</div>
+
+  <div style="display: flex; gap: 10px; margin-bottom: 24px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 10px;">
+      <button id="tab-login" class="btn-login" style="margin: 0; padding: 10px; flex: 1; font-size: 13px; background: #162040; color: #fff; box-shadow: none;" onclick="switchTab('login')">Masuk</button>
+      <button id="tab-register" class="btn-login" style="margin: 0; padding: 10px; flex: 1; font-size: 13px; background: transparent; color: #8B9EC7; box-shadow: none;" onclick="switchTab('register')">Registrasi CPNS</button>
+  </div>
 
   <div class="error-box" id="err"><i class="ti ti-alert-circle"></i><span id="err-msg"></span></div>
 
@@ -75,9 +80,18 @@ body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100v
       <label>Username / NIP</label>
       <div class="input-wrap">
         <i class="ti ti-user"></i>
-        <input type="text" id="username" placeholder="Contoh: admin" autocomplete="username" required>
+        <input type="text" id="username" placeholder="Masukkan NIP Anda" autocomplete="username" required>
       </div>
     </div>
+    
+    <div class="form-group" id="group-email" style="display: none;">
+      <label>Email Aktif</label>
+      <div class="input-wrap">
+        <i class="ti ti-mail"></i>
+        <input type="email" id="email" placeholder="email@contoh.com">
+      </div>
+    </div>
+
     <div class="form-group">
       <label>Password</label>
       <div class="input-wrap">
@@ -89,17 +103,47 @@ body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100v
   </form>
 
   <div class="hint">
-    <p><strong>Panduan Login Demo:</strong><br>
-    • Username: <strong>admin</strong><br>
-    • Password: <strong>admin2026</strong><br>
-    <br>
-    <small><em>(Pastikan tidak tertukar: admin adalah username, admin2026 adalah password)</em></small>
+    <p><strong>Panduan Pengguna Baru:</strong><br>
+    Pilih tab <strong>Registrasi CPNS</strong>. Masukkan NIP dan Email Aktif Anda. Sistem akan memverifikasi NIP Anda secara otomatis dengan database Master BPSDM.</p>
   </div>
 </div>
 
 <script>
   if (localStorage.getItem('token')) {
     window.location.href = 'simlatsar_papua_barat_daya.html';
+  }
+
+  let mode = 'login';
+
+  function switchTab(newMode) {
+      mode = newMode;
+      const tLogin = document.getElementById('tab-login');
+      const tReg = document.getElementById('tab-register');
+      const gEmail = document.getElementById('group-email');
+      const emailInp = document.getElementById('email');
+      const title = document.getElementById('form-title-text');
+      const sub = document.getElementById('form-sub-text');
+      const btn = document.getElementById('btn');
+      
+      document.getElementById('err').style.display = 'none';
+
+      if (mode === 'login') {
+          tLogin.style.background = '#162040'; tLogin.style.color = '#fff';
+          tReg.style.background = 'transparent'; tReg.style.color = '#8B9EC7';
+          gEmail.style.display = 'none';
+          emailInp.removeAttribute('required');
+          title.innerText = 'Masuk ke Sistem';
+          sub.innerText = 'Gunakan NIP dan password yang telah Anda buat';
+          btn.innerText = 'Masuk ke Sistem';
+      } else {
+          tReg.style.background = '#162040'; tReg.style.color = '#fff';
+          tLogin.style.background = 'transparent'; tLogin.style.color = '#8B9EC7';
+          gEmail.style.display = 'block';
+          emailInp.setAttribute('required', 'true');
+          title.innerText = 'Registrasi Akun CPNS';
+          sub.innerText = 'Daftarkan NIP Anda (Nama akan sinkron otomatis)';
+          btn.innerText = 'Buat Akun Sekarang';
+      }
   }
 
   document.getElementById('form').addEventListener('submit', async e => {
@@ -113,16 +157,24 @@ body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100v
     errBox.style.display = 'none';
 
     try {
-      const res = await fetch('/api/login', {
+      const endpoint = mode === 'login' ? '/api/login' : '/api/register';
+      const payload = {
+          username: document.getElementById('username').value.trim(),
+          nip: document.getElementById('username').value.trim(), // for register api
+          password: document.getElementById('password').value
+      };
+      
+      if (mode === 'register') {
+          payload.email = document.getElementById('email').value.trim();
+      }
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: document.getElementById('username').value.trim(),
-          password: document.getElementById('password').value
-        })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Login gagal');
+      if (!res.ok) throw new Error(data.error || 'Proses gagal');
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       window.location.href = 'simlatsar_papua_barat_daya.html';
@@ -130,7 +182,7 @@ body{font-family:'Inter',sans-serif;background:#0A0F1E;color:#F0F4FF;height:100v
       errMsg.textContent = err.message;
       errBox.style.display = 'flex';
       btn.disabled = false;
-      btn.textContent = 'Masuk ke Sistem';
+      btn.textContent = mode === 'login' ? 'Masuk ke Sistem' : 'Buat Akun Sekarang';
     }
   });
 </script>
