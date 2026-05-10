@@ -234,6 +234,11 @@
             
             <!-- DASHBOARD -->
             <div class="page active" id="page-dashboard">
+                <div class="card" style="background: linear-gradient(135deg, var(--bg3), var(--navy-light)); border-left: 4px solid var(--gold); margin-bottom: 24px; padding: 20px 24px;">
+                    <h2 style="margin: 0 0 8px 0; font-size: 22px;">Selamat Datang, <span id="dash-user-name" style="color: var(--gold);">Administrator</span>!</h2>
+                    <p style="color: var(--text2); margin: 0; font-size: 14px;">Sistem Informasi Manajemen Latihan Dasar CPNS Provinsi Papua Barat Daya Formasi 2024.</p>
+                </div>
+
                 <div class="grid-stats">
                     <div class="stat-card blue" style="cursor:pointer" onclick="showPage('peserta', document.getElementById('menu-peserta'))">
                         <div class="stat-icon blue"><i class="ti ti-users"></i></div>
@@ -548,6 +553,10 @@
         }
         const user = JSON.parse(localStorage.getItem('user'));
         document.getElementById('user-avatar').innerText = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        
+        // Populate dashboard welcome banner
+        const dashName = document.getElementById('dash-user-name');
+        if(dashName) dashName.innerText = user.name;
 
         if (user.role !== 'admin') {
             document.getElementById('menu-monitoring').style.display = 'none';
@@ -631,11 +640,26 @@
         renderPeserta(participants);
 
         if (!isAdmin && participants.length > 0) {
-            // Fill bio form with their own data
             const p = participants[0];
+            
+            // Tampilkan dan Isi Kartu Profil
+            document.getElementById('profile-card').style.display = 'block';
+            document.getElementById('profile-nama').innerText = p.nama;
+            document.getElementById('profile-nip').innerText = p.nip;
+            document.getElementById('profile-gol').innerText = p.golongan;
+            document.getElementById('profile-gel').innerText = 'Gelombang ' + p.gelombang;
+            document.getElementById('profile-avatar').innerText = p.nama.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+
+            // Isi form biodata lengkap
             document.getElementById('bio-email').value = p.email || '';
             document.getElementById('bio-instansi').value = p.instansi || '';
             document.getElementById('bio-hp').value = p.no_hp || '';
+            document.getElementById('bio-jabatan').value = p.jabatan || '';
+            document.getElementById('bio-tmp-lahir').value = p.tempat_lahir || '';
+            document.getElementById('bio-tgl-lahir').value = p.tanggal_lahir || '';
+            document.getElementById('bio-jk').value = p.jenis_kelamin || '';
+            document.getElementById('bio-agama').value = p.agama || '';
+            document.getElementById('bio-pendidikan').value = p.pendidikan || '';
         }
     }
 
