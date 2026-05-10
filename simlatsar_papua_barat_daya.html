@@ -481,9 +481,34 @@
 
             <!-- MONITORING -->
             <div class="page" id="page-monitoring">
-                <div class="card">
+                <div class="card" style="margin-bottom: 24px;">
                     <div class="card-title"><i class="ti ti-chart-dots"></i> Statistik Progres Kelengkapan Dokumen</div>
-                    <canvas id="chart-monitoring" height="300"></canvas>
+                    <canvas id="chart-monitoring" height="100"></canvas>
+                </div>
+                
+                <div class="card" style="padding: 0;">
+                    <div class="card-header" style="border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="card-title" style="margin: 0;"><i class="ti ti-list-check"></i> Rincian Kelengkapan Berkas Peserta</div>
+                        <button class="btn btn-primary" onclick="initMonitoring()"><i class="ti ti-refresh"></i> Segarkan Data</button>
+                    </div>
+                    <div class="table-wrap" style="max-height: 600px; overflow-y: auto;">
+                        <table>
+                            <thead style="position: sticky; top: 0; background: var(--bg2); z-index: 10;">
+                                <tr>
+                                    <th>Nama / NIP</th>
+                                    <th>Gel.</th>
+                                    <th style="text-align:center">SK & SPMT</th>
+                                    <th style="text-align:center">KTP</th>
+                                    <th style="text-align:center">Bebas Tugas</th>
+                                    <th style="text-align:center">Surat Latsar</th>
+                                    <th style="text-align:center">Pas Foto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monitoring-list">
+                                <tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--text2)">Memuat data kelengkapan...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -680,8 +705,80 @@
         });
         
         // Monitoring Stats
-        window._docsCount = stats.docsCount || [];
-        window._totalPeserta = stats.totalPeserta || 0;
+        window._docsCount = stats ? stats.docsCount : [];
+        window._totalPeserta = stats ? stats.totalPeserta : 0;
+    }
+
+    async function initMonitoring() {
+        const mCtx = document.getElementById('chart-monitoring').getContext('2d');
+        if (charts.monitoring) charts.monitoring.destroy();
+
+        const labels = DOCS.map(d => d.name);
+        const data = labels.map(l => {
+            const f = window._docsCount.find(x => x.jenis_dokumen === l);
+            return f ? parseInt(f.jumlah) : 0;
+        });
+
+        const customDocs = window._docsCount.filter(x => !labels.includes(x.jenis_dokumen)).reduce((a,b)=>a+parseInt(b.jumlah),0);
+        labels.push('Berkas Tambahan');
+        data.push(customDocs);
+
+        charts.monitoring = new Chart(mCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah File Diunggah',
+                    data: data,
+                    backgroundColor: '#1D9E75'
+                }]
+            },
+            options: {
+                scales: {
+                    y: { ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { ticks: { color: '#8B9EC7', font: {size: 10} }, grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // Render Table Monitoring (Detailed)
+        try {
+            const tbody = document.getElementById('monitoring-list');
+            if (!tbody) return;
+
+            const docsRes = await apiFetch('/dokumen');
+            const allUploaded = Array.isArray(docsRes) ? docsRes : [];
+            
+            if (_allPeserta.length === 0) {
+                const res = await apiFetch('/peserta?limit=1500');
+                _allPeserta = res.data || [];
+            }
+
+            tbody.innerHTML = _allPeserta.map(p => {
+                const myDocs = allUploaded.filter(d => d.peserta_nip === p.nip.replace(/\s+/g,''));
+                const checkDoc = (docName) => myDocs.some(d => d.jenis_dokumen === docName) 
+                    ? '<i class="ti ti-check" style="color:var(--green); font-size:18px; font-weight:bold;"></i>' 
+                    : '<i class="ti ti-x" style="color:var(--red); font-size:18px; font-weight:bold;"></i>';
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight:600">${p.nama}</div>
+                            <div style="font-size:11px; color:var(--text2); font-family:monospace;">${p.nip}</div>
+                        </td>
+                        <td><span class="badge badge-green">${p.gelombang}</span></td>
+                        <td style="text-align:center">${checkDoc(DOCS[0].name)}</td>
+                        <td style="text-align:center">${checkDoc(DOCS[1].name)}</td>
+                        <td style="text-align:center">${checkDoc(DOCS[2].name)}</td>
+                        <td style="text-align:center">${checkDoc(DOCS[3].name)}</td>
+                        <td style="text-align:center">${checkDoc(DOCS[4].name)}</td>
+                    </tr>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error('Failed to load detailed monitoring:', e);
+        }
     }
 
     let timerInterval;
