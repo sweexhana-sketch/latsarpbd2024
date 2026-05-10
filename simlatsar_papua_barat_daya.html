@@ -278,7 +278,29 @@
 
             <!-- PESERTA -->
             <div class="page" id="page-peserta">
-                <div class="search-row">
+                <div class="card" id="form-biodata-container" style="margin-bottom: 24px;">
+                    <div class="card-title"><i class="ti ti-user-check"></i> Lengkapi Profil Anda (Wajib)</div>
+                    <div class="card-desc" style="font-size: 12px; color: var(--text2); margin-bottom: 16px;">Silakan lengkapi data isian di bawah ini sebelum mengunggah dokumen persyaratan.</div>
+                    <form id="form-biodata" onsubmit="saveBiodata(event)">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email</label>
+                                <input type="email" id="bio-email" class="input-box" required placeholder="Masukkan alamat email">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
+                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM (Disingkat)">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WA)</label>
+                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="btn-save-bio"><i class="ti ti-device-floppy"></i> Simpan Profil</button>
+                    </form>
+                </div>
+
+                <div class="search-row" id="peserta-search-row">
                     <input type="text" class="input-box" id="search-peserta" placeholder="Cari nama atau NIP..." oninput="filterPeserta()">
                     <select class="select-box" id="filter-gel" onchange="filterPeserta()">
                         <option value="">Semua Gelombang</option>
@@ -333,28 +355,6 @@
 
             <!-- DOKUMEN -->
             <div class="page" id="page-dokumen">
-                <div class="card" style="margin-bottom: 24px;">
-                    <div class="card-title"><i class="ti ti-user-check"></i> Form Data Diri (Wajib)</div>
-                    <div class="card-desc" style="font-size: 12px; color: var(--text2); margin-bottom: 16px;">Lengkapi data isian sesuai form registrasi online sebelum mengunggah dokumen persyaratan.</div>
-                    <form id="form-biodata" onsubmit="saveBiodata(event)">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email</label>
-                                <input type="email" id="bio-email" class="input-box" required placeholder="Masukkan alamat email">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
-                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM (Disingkat)">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WA)</label>
-                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary" id="btn-save-bio"><i class="ti ti-device-floppy"></i> Simpan Data Diri</button>
-                    </form>
-                </div>
-
                 <div class="doc-toolbar" id="doc-toolbar">
                     <!-- Diisi dinamis oleh JS -->
                 </div>
@@ -408,8 +408,6 @@
         document.getElementById('user-avatar').innerText = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
         if (user.role !== 'admin') {
-            document.getElementById('menu-dashboard').style.display = 'none';
-            document.getElementById('menu-peserta').style.display = 'none';
             document.getElementById('menu-monitoring').style.display = 'none';
         }
         return true;
@@ -470,12 +468,33 @@
     }
 
     async function filterPeserta() {
-        const q = document.getElementById('search-peserta').value;
+        const user = JSON.parse(localStorage.getItem('user'));
+        const isAdmin = user.role === 'admin';
+
+        if (!isAdmin) {
+            document.getElementById('peserta-search-row').style.display = 'none';
+        } else {
+            document.getElementById('form-biodata-container').style.display = 'none';
+        }
+
+        let q = document.getElementById('search-peserta').value;
         const gel = document.getElementById('filter-gel').value;
+        
+        // Non-admin can only fetch their own data
+        if (!isAdmin) q = user.username;
+
         const query = new URLSearchParams({ q, gelombang: gel }).toString();
         const result = await apiFetch(`/peserta?${query}`);
         participants = result.data || [];
         renderPeserta(participants);
+
+        if (!isAdmin && participants.length > 0) {
+            // Fill bio form with their own data
+            const p = participants[0];
+            document.getElementById('bio-email').value = p.email || '';
+            document.getElementById('bio-instansi').value = p.instansi || '';
+            document.getElementById('bio-hp').value = p.no_hp || '';
+        }
     }
 
     async function initDashboard() {
@@ -662,11 +681,7 @@
             }
         }
 
-        // Fill bio form
-        document.getElementById('bio-email').value = pData && pData.email ? pData.email : '';
-        document.getElementById('bio-instansi').value = pData && pData.instansi ? pData.instansi : '';
-        document.getElementById('bio-hp').value = pData && pData.no_hp ? pData.no_hp : '';
-
+        // Bio form is now in Data Peserta page, so we don't need to populate it here anymore.
         const safeId = (name) => btoa(unescape(encodeURIComponent(name))).replace(/[^a-zA-Z0-9]/g,'');
 
         const grid = document.getElementById('doc-grid');
@@ -771,15 +786,12 @@
                 const now = new Date();
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', options);
-                
+                initDashboard();
                 initJadwal();
+                await filterPeserta();
                 initDocs();
                 if (u.role === 'admin') {
-                    initDashboard();
                     initMonitoring();
-                    await filterPeserta();
-                } else {
-                    showPage('dokumen', document.getElementById('menu-dokumen'));
                 }
             }
         });
