@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
   
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { nip, email, instansi, no_hp } = req.body;
+  const { nip, email, instansi, no_hp, tempat_lahir, tanggal_lahir, jenis_kelamin, agama, pendidikan, jabatan } = req.body;
   if (!nip) return res.status(400).json({ error: 'NIP wajib diisi' });
   
   // Admin can edit anyone, participant can only edit their own
@@ -25,8 +25,15 @@ module.exports = async (req, res) => {
   const pool = getPool();
   try {
     await pool.query(
-      'UPDATE peserta SET email = $1, instansi = $2, no_hp = $3 WHERE nip = $4',
-      [email || null, instansi || null, no_hp || null, nip]
+      `UPDATE peserta SET 
+        email = $1, instansi = $2, no_hp = $3,
+        tempat_lahir = $4, tanggal_lahir = $5, jenis_kelamin = $6,
+        agama = $7, pendidikan = $8, jabatan = $9
+       WHERE nip = $10`,
+      [email || null, instansi || null, no_hp || null, 
+       tempat_lahir || null, tanggal_lahir || null, jenis_kelamin || null,
+       agama || null, pendidikan || null, jabatan || null, 
+       nip]
     );
     res.json({ message: 'Data diri berhasil diperbarui' });
   } catch (err) {

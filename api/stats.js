@@ -10,6 +10,7 @@ module.exports = async (req, res) => {
   const pool = getPool();
   try {
     const results = await Promise.all([
+      pool.query("ALTER TABLE peserta ADD COLUMN IF NOT EXISTS tempat_lahir VARCHAR(100), ADD COLUMN IF NOT EXISTS tanggal_lahir DATE, ADD COLUMN IF NOT EXISTS jenis_kelamin VARCHAR(20), ADD COLUMN IF NOT EXISTS agama VARCHAR(50), ADD COLUMN IF NOT EXISTS pendidikan VARCHAR(150), ADD COLUMN IF NOT EXISTS jabatan VARCHAR(150)"),
       pool.query("UPDATE peserta SET golongan = 'PENATA MUDA III/A' WHERE golongan ILIKE '%PENATA III/A%' OR golongan ILIKE '%PENATA MUDAH%' OR golongan ILIKE '%PENATA MUDAH III/A%'"),
       pool.query("UPDATE peserta SET golongan = 'PENGATUR II/C' WHERE golongan ILIKE '%PENGATUR II/C%' OR golongan ILIKE '%PENGATUR  II/C%'"),
       pool.query('SELECT COUNT(*) AS total FROM peserta'),
@@ -18,12 +19,12 @@ module.exports = async (req, res) => {
       pool.query('SELECT jenis_dokumen, COUNT(*) AS jumlah FROM dokumen GROUP BY jenis_dokumen')
     ]);
     res.json({
-      totalPeserta: parseInt(results[2].rows[0].total),
+      totalPeserta: parseInt(results[3].rows[0].total),
       totalAngkatan: 26,
       totalGelombang: 7,
-      byGelombang: results[3].rows,
-      byGolongan: results[4].rows,
-      docsCount: results[5].rows
+      byGelombang: results[4].rows,
+      byGolongan: results[5].rows,
+      docsCount: results[6].rows
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

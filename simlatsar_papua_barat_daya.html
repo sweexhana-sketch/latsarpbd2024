@@ -279,22 +279,72 @@
 
             <!-- PESERTA -->
             <div class="page" id="page-peserta">
+                <!-- Info Profil CPNS (Muncul untuk User) -->
+                <div class="card" id="profile-card" style="display: none; background: linear-gradient(135deg, var(--bg3), var(--navy-light)); margin-bottom: 24px;">
+                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                        <div style="width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #fff;" id="profile-avatar">U</div>
+                        <div style="flex: 1;">
+                            <h2 style="margin: 0 0 8px 0; font-size: 20px;" id="profile-nama">-</h2>
+                            <div style="color: var(--text2); margin-bottom: 4px; font-family: monospace; font-size: 14px;" id="profile-nip">-</div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <span class="badge badge-gold" id="profile-gol">-</span>
+                                <span class="badge badge-green" id="profile-gel">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card" id="form-biodata-container" style="margin-bottom: 24px;">
                     <div class="card-title"><i class="ti ti-user-check"></i> Lengkapi Profil Anda (Wajib)</div>
                     <div class="card-desc" style="font-size: 12px; color: var(--text2); margin-bottom: 16px;">Silakan lengkapi data isian di bawah ini sebelum mengunggah dokumen persyaratan.</div>
                     <form id="form-biodata" onsubmit="saveBiodata(event)">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email</label>
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email Aktif</label>
                                 <input type="email" id="bio-email" class="input-box" required placeholder="Masukkan alamat email">
                             </div>
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
-                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM (Disingkat)">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WhatsApp)</label>
+                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
                             </div>
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WA)</label>
-                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
+                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM Prov PBD">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Jabatan</label>
+                                <input type="text" id="bio-jabatan" class="input-box" placeholder="Contoh: Analis SDM Aparatur">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Tempat Lahir</label>
+                                <input type="text" id="bio-tmp-lahir" class="input-box" placeholder="Contoh: Sorong">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Tanggal Lahir</label>
+                                <input type="date" id="bio-tgl-lahir" class="input-box">
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Jenis Kelamin</label>
+                                <select id="bio-jk" class="select-box" style="width:100%">
+                                    <option value="">Pilih</option>
+                                    <option value="L">Laki-Laki</option>
+                                    <option value="P">Perempuan</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Agama</label>
+                                <select id="bio-agama" class="select-box" style="width:100%">
+                                    <option value="">Pilih</option>
+                                    <option value="Kristen Protestan">Kristen Protestan</option>
+                                    <option value="Katolik">Katolik</option>
+                                    <option value="Islam">Islam</option>
+                                    <option value="Hindu">Hindu</option>
+                                    <option value="Buddha">Buddha</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Pendidikan Terakhir</label>
+                                <input type="text" id="bio-pendidikan" class="input-box" placeholder="Contoh: S-1 Ilmu Administrasi Negara">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="btn-save-bio"><i class="ti ti-device-floppy"></i> Simpan Profil</button>
@@ -314,7 +364,7 @@
                         <option value="7">Gelombang 7</option>
                     </select>
                 </div>
-                <div class="card" style="padding: 0;">
+                <div class="card" id="admin-table-container" style="padding: 0;">
                     <div class="table-wrap">
                         <table>
                             <thead>
@@ -393,6 +443,19 @@
 
             <!-- DOKUMEN -->
             <div class="page" id="page-dokumen">
+                
+                <div class="card" style="background: rgba(255,183,77,0.1); border: 1px solid var(--gold); margin-bottom: 24px;">
+                    <div class="card-title" style="color: var(--gold);"><i class="ti ti-alert-circle"></i> Ketentuan Persyaratan Latsar CPNS 2026</div>
+                    <div style="font-size: 13px; color: var(--text1); line-height: 1.6;">
+                        <ol style="margin: 0; padding-left: 16px;">
+                            <li>Bagi Pria wajib memangkas Rambut (1 cm).</li>
+                            <li>Bagi Wanita tidak diperkenankan memakai rambut sambung serta mewarnai rambut.</li>
+                            <li>Spesifikasi Pas Foto: Berukuran 4x6, berasio 472x709 pixel (kurang dari 1MB), berlatar belakang merah.</li>
+                            <li>Dokumen fisik diserahkan saat klasikal, dokumen digital WAJIB diunggah pada portal ini sesuai batas waktu (Gelombang Pertama paling lambat 13 Mei 2026 jam 23:59 WIT).</li>
+                        </ol>
+                    </div>
+                </div>
+
                 <div class="doc-toolbar" id="doc-toolbar">
                     <!-- Diisi dinamis oleh JS -->
                 </div>
@@ -445,12 +508,11 @@
     ];
 
     const DOCS = [
-        {name:'SK CPNS', cat:'required', desc:'Dokumen SK CPNS (Format PDF).'},
-        {name:'SPMT', cat:'required', desc:'Surat Pernyataan Melaksanakan Tugas (Format PDF).'},
-        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi dari instansi/OPD (Format PDF).'},
-        {name:'Surat Pernyataan Mengikuti Latsar', cat:'required', desc:'Wajib bermaterai 10000 (Format PDF).'},
-        {name:'KTP', cat:'required', desc:'Kartu Tanda Penduduk (Format Gambar).'},
-        {name:'PAS FOTO (4X6)', cat:'optional', desc:'Pas foto terbaru (Format Gambar).'}
+        {name:'Fotocopy SK CPNS & SPMT', cat:'required', desc:'1 Lembar Fotocopy SK CPNS dan SPMT yang digabungkan (Format PDF).'},
+        {name:'Fotocopy KTP', cat:'required', desc:'1 Lembar Kartu Tanda Penduduk (Format Gambar/PDF).'},
+        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi bebas tugas dari instansi/OPD (Format PDF).'},
+        {name:'Surat Pernyataan Bersedia Mengikuti LATSAR', cat:'required', desc:'Surat Pernyataan Mematuhi Semua Peraturan LATSAR. Tanda tangan bermaterai 10000 (Format PDF).'},
+        {name:'Pas Foto Latar Merah (4x6)', cat:'required', desc:'Pas Foto 4x6 (Rasio 472x709 px, Latar belakang merah) (Format Gambar).'}
     ];
 
     async function checkAuth() {
@@ -713,6 +775,13 @@
         const email = document.getElementById('bio-email').value;
         const instansi = document.getElementById('bio-instansi').value;
         const no_hp = document.getElementById('bio-hp').value;
+        const jabatan = document.getElementById('bio-jabatan').value;
+        const tmp_lahir = document.getElementById('bio-tmp-lahir').value;
+        const tgl_lahir = document.getElementById('bio-tgl-lahir').value;
+        const jk = document.getElementById('bio-jk').value;
+        const agama = document.getElementById('bio-agama').value;
+        const pendidikan = document.getElementById('bio-pendidikan').value;
+
         const btn = document.getElementById('btn-save-bio');
 
         try {
@@ -722,7 +791,12 @@
             const res = await apiFetch('/peserta/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nip: targetNip, email, instansi, no_hp })
+                body: JSON.stringify({ 
+                    nip: targetNip, 
+                    email, instansi, no_hp,
+                    jabatan, tempat_lahir: tmp_lahir, tanggal_lahir: tgl_lahir,
+                    jenis_kelamin: jk, agama, pendidikan
+                })
             });
 
             if (res.error) throw new Error(res.error);
@@ -732,16 +806,14 @@
             if (isAdmin && _allPeserta.length > 0) {
                 const idx = _allPeserta.findIndex(p => p.nip.replace(/\s+/g,'') === targetNip);
                 if (idx !== -1) {
-                    _allPeserta[idx].email = email;
-                    _allPeserta[idx].instansi = instansi;
-                    _allPeserta[idx].no_hp = no_hp;
+                    _allPeserta[idx] = { ..._allPeserta[idx], email, instansi, no_hp, jabatan, tempat_lahir: tmp_lahir, tanggal_lahir: tgl_lahir, jenis_kelamin: jk, agama, pendidikan };
                 }
             }
         } catch (err) {
             console.error(err);
             showToast(err.message || 'Gagal menyimpan data diri', 'error');
         } finally {
-            btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Data Diri`;
+            btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Profil`;
             btn.disabled = false;
         }
     }
