@@ -356,20 +356,34 @@
             <!-- JADWAL -->
             <div class="page" id="page-jadwal">
                 <div class="card">
-                    <div class="card-title"><i class="ti ti-calendar-time"></i> Jadwal Lengkap 7 Gelombang</div>
+                    <div class="card-title"><i class="ti ti-calendar-time"></i> Ringkasan Jadwal 7 Gelombang</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Gel.</th>
                                     <th>Angkatan</th>
-                                    <th>Pemberkasan</th>
                                     <th>Mulai Pelaksanaan</th>
                                     <th>Selesai</th>
                                 </tr>
                             </thead>
                             <tbody id="jadwal-list"></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        <div class="card-title"><i class="ti ti-file-analytics"></i> Master Jadwal Kegiatan Latsar CPNS 2026</div>
+                        <a href="/assets/pdf/Master_Jadwal_Latsar_2026.pdf" target="_blank" class="btn btn-primary">
+                            <i class="ti ti-download"></i> Unduh Jadwal (PDF)
+                        </a>
+                    </div>
+                    <div style="width: 100%; height: 600px; border-radius: var(--radius2); overflow: hidden; border: var(--border); margin-top: 16px;">
+                        <iframe src="/assets/pdf/Master_Jadwal_Latsar_2026.pdf#toolbar=0" width="100%" height="100%" style="border: none;"></iframe>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text2); margin-top: 12px;">
+                        *Jadwal di atas merinci seluruh kegiatan per hari mulai dari MOOC, Distance Learning, Aktualisasi, hingga Klasikal.
                     </div>
                 </div>
             </div>
@@ -606,7 +620,6 @@
             <tr>
                 <td><span class="badge" style="background:${w.color}22; color:${w.color}">${w.id}</span></td>
                 <td>Angkatan ${w.ang}</td>
-                <td>Mei 2026</td>
                 <td>${w.start} 2026</td>
                 <td>${w.end} 2026</td>
             </tr>
