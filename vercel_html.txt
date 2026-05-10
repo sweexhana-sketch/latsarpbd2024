@@ -205,16 +205,12 @@
             <a class="nav-item" id="menu-jadwal" onclick="showPage('jadwal', this)">
                 <i class="ti ti-calendar"></i><span>Jadwal Latsar</span>
             </a>
-            <div class="nav-section">Laporan & Berkas</div>
+            <div class="nav-section">Laporan</div>
             <a class="nav-item" id="menu-dokumen" onclick="showPage('dokumen', this)">
-                <i class="ti ti-files"></i><span>Persyaratan & Upload Berkas</span>
+                <i class="ti ti-files"></i><span>Persyaratan Dokumen</span>
             </a>
             <a class="nav-item" id="menu-monitoring" onclick="showPage('monitoring', this)">
                 <i class="ti ti-chart-line"></i><span>Monitoring</span>
-            </a>
-            <div class="nav-section">Layanan Interaktif</div>
-            <a class="nav-item" id="menu-layanan" onclick="showPage('layanan', this)">
-                <i class="ti ti-messages"></i><span>Info & Pengaduan</span>
             </a>
             <div class="nav-section">Akun</div>
             <a class="nav-item" onclick="logout()">
@@ -238,28 +234,23 @@
             
             <!-- DASHBOARD -->
             <div class="page active" id="page-dashboard">
-                <div class="card" style="background: linear-gradient(135deg, var(--bg3), var(--navy-light)); border-left: 4px solid var(--gold); margin-bottom: 24px; padding: 20px 24px;">
-                    <h2 style="margin: 0 0 8px 0; font-size: 22px;">Selamat Datang, <span id="dash-user-name" style="color: var(--gold);">Administrator</span>!</h2>
-                    <p style="color: var(--text2); margin: 0; font-size: 14px;">Sistem Informasi Manajemen Latihan Dasar CPNS Provinsi Papua Barat Daya Formasi 2024.</p>
-                </div>
-
                 <div class="grid-stats">
-                    <div class="stat-card blue" style="cursor:pointer" onclick="showPage('peserta', document.getElementById('menu-peserta'))">
+                    <div class="stat-card blue">
                         <div class="stat-icon blue"><i class="ti ti-users"></i></div>
                         <div class="stat-value" id="stat-peserta">0</div>
                         <div class="stat-label">Total Peserta CPNS</div>
                     </div>
-                    <div class="stat-card" style="cursor:pointer" onclick="showPage('jadwal', document.getElementById('menu-jadwal'))">
+                    <div class="stat-card">
                         <div class="stat-icon gold"><i class="ti ti-layers-linked"></i></div>
                         <div class="stat-value" id="stat-angkatan">0</div>
                         <div class="stat-label">Angkatan Pelatihan</div>
                     </div>
-                    <div class="stat-card green" style="cursor:pointer" onclick="showPage('jadwal', document.getElementById('menu-jadwal'))">
+                    <div class="stat-card green">
                         <div class="stat-icon green"><i class="ti ti-wave-sine"></i></div>
                         <div class="stat-value" id="stat-gelombang">0</div>
                         <div class="stat-label">Gelombang Latsar</div>
                     </div>
-                    <div class="stat-card red" style="cursor:pointer" onclick="if(document.getElementById('menu-monitoring').style.display !== 'none') showPage('monitoring', document.getElementById('menu-monitoring'))">
+                    <div class="stat-card red">
                         <div class="stat-icon red"><i class="ti ti-calendar-event"></i></div>
                         <div class="stat-value">Mei - Sep</div>
                         <div class="stat-label">Periode Tahun 2026</div>
@@ -283,77 +274,26 @@
                         <canvas id="chart-gelombang" height="200"></canvas>
                     </div>
                 </div>
-                
             </div>
 
             <!-- PESERTA -->
             <div class="page" id="page-peserta">
-                <!-- Info Profil CPNS (Muncul untuk User) -->
-                <div class="card" id="profile-card" style="display: none; background: linear-gradient(135deg, var(--bg3), var(--navy-light)); margin-bottom: 24px;">
-                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                        <div style="width: 80px; height: 80px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: #fff;" id="profile-avatar">U</div>
-                        <div style="flex: 1;">
-                            <h2 style="margin: 0 0 8px 0; font-size: 20px;" id="profile-nama">-</h2>
-                            <div style="color: var(--text2); margin-bottom: 4px; font-family: monospace; font-size: 14px;" id="profile-nip">-</div>
-                            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <span class="badge badge-gold" id="profile-gol">-</span>
-                                <span class="badge badge-green" id="profile-gel">-</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="card" id="form-biodata-container" style="margin-bottom: 24px;">
                     <div class="card-title"><i class="ti ti-user-check"></i> Lengkapi Profil Anda (Wajib)</div>
                     <div class="card-desc" style="font-size: 12px; color: var(--text2); margin-bottom: 16px;">Silakan lengkapi data isian di bawah ini sebelum mengunggah dokumen persyaratan.</div>
                     <form id="form-biodata" onsubmit="saveBiodata(event)">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px;">
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email Aktif</label>
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Email</label>
                                 <input type="email" id="bio-email" class="input-box" required placeholder="Masukkan alamat email">
                             </div>
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WhatsApp)</label>
-                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
-                            </div>
-                            <div class="form-group">
                                 <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nama Instansi / OPD</label>
-                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM Prov PBD">
+                                <input type="text" id="bio-instansi" class="input-box" required placeholder="Contoh: BKPSDM (Disingkat)">
                             </div>
                             <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Jabatan</label>
-                                <input type="text" id="bio-jabatan" class="input-box" placeholder="Contoh: Analis SDM Aparatur">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Tempat Lahir</label>
-                                <input type="text" id="bio-tmp-lahir" class="input-box" placeholder="Contoh: Sorong">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Tanggal Lahir</label>
-                                <input type="date" id="bio-tgl-lahir" class="input-box">
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Jenis Kelamin</label>
-                                <select id="bio-jk" class="select-box" style="width:100%">
-                                    <option value="">Pilih</option>
-                                    <option value="L">Laki-Laki</option>
-                                    <option value="P">Perempuan</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Agama</label>
-                                <select id="bio-agama" class="select-box" style="width:100%">
-                                    <option value="">Pilih</option>
-                                    <option value="Kristen Protestan">Kristen Protestan</option>
-                                    <option value="Katolik">Katolik</option>
-                                    <option value="Islam">Islam</option>
-                                    <option value="Hindu">Hindu</option>
-                                    <option value="Buddha">Buddha</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Pendidikan Terakhir</label>
-                                <input type="text" id="bio-pendidikan" class="input-box" placeholder="Contoh: S-1 Ilmu Administrasi Negara">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Nomor HP (WA)</label>
+                                <input type="text" id="bio-hp" class="input-box" required placeholder="0812xxxxxxxx">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="btn-save-bio"><i class="ti ti-device-floppy"></i> Simpan Profil</button>
@@ -373,7 +313,7 @@
                         <option value="7">Gelombang 7</option>
                     </select>
                 </div>
-                <div class="card" id="admin-table-container" style="padding: 0;">
+                <div class="card" style="padding: 0;">
                     <div class="table-wrap">
                         <table>
                             <thead>
@@ -394,37 +334,15 @@
 
             <!-- JADWAL -->
             <div class="page" id="page-jadwal">
-                <div class="card" style="background: linear-gradient(135deg, var(--navy-light), var(--bg3)); border-color: var(--gold); text-align: center;">
-                    <div style="font-size: 14px; font-weight: 600; color: var(--gold); margin-bottom: 8px;">DIGITAL COUNTDOWN TIMER LATSAR CPNS 2026</div>
-                    <div id="jadwal-timer-target" style="font-size: 16px; margin-bottom: 16px; color: #fff;">Menghitung jadwal berikutnya...</div>
-                    <div id="jadwal-timer" style="display: flex; justify-content: center; gap: 16px;">
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
-                            <div id="timer-days" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
-                            <div style="font-size: 11px; color: var(--gold);">HARI</div>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
-                            <div id="timer-hours" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
-                            <div style="font-size: 11px; color: var(--gold);">JAM</div>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
-                            <div id="timer-mins" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
-                            <div style="font-size: 11px; color: var(--gold);">MENIT</div>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
-                            <div id="timer-secs" style="font-size: 32px; font-weight: 800; color: var(--red);">00</div>
-                            <div style="font-size: 11px; color: var(--gold);">DETIK</div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="card">
-                    <div class="card-title"><i class="ti ti-calendar-time"></i> Ringkasan Jadwal 7 Gelombang</div>
+                    <div class="card-title"><i class="ti ti-calendar-time"></i> Jadwal Lengkap 7 Gelombang</div>
                     <div class="table-wrap">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Gel.</th>
                                     <th>Angkatan</th>
+                                    <th>Pemberkasan</th>
                                     <th>Mulai Pelaksanaan</th>
                                     <th>Selesai</th>
                                 </tr>
@@ -433,145 +351,21 @@
                         </table>
                     </div>
                 </div>
-
-                <div class="card">
-                    <div class="card-header" style="justify-content: space-between; display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
-                        <div class="card-title"><i class="ti ti-file-analytics"></i> Master Jadwal Kegiatan Latsar CPNS 2026</div>
-                        <a href="/assets/pdf/Master_Jadwal_Latsar_2026.pdf" target="_blank" class="btn btn-primary">
-                            <i class="ti ti-download"></i> Unduh Jadwal (PDF)
-                        </a>
-                    </div>
-                    <div style="width: 100%; height: 600px; border-radius: var(--radius2); overflow: hidden; border: var(--border); margin-top: 16px;">
-                        <iframe src="/assets/pdf/Master_Jadwal_Latsar_2026.pdf#toolbar=0" width="100%" height="100%" style="border: none;"></iframe>
-                    </div>
-                    <div style="font-size: 11px; color: var(--text2); margin-top: 12px;">
-                        *Jadwal di atas merinci seluruh kegiatan per hari mulai dari MOOC, Distance Learning, Aktualisasi, hingga Klasikal.
-                    </div>
-                </div>
             </div>
 
             <!-- DOKUMEN -->
             <div class="page" id="page-dokumen">
-                
-                <div class="card" style="background: rgba(255,183,77,0.1); border: 1px solid var(--gold); margin-bottom: 24px;">
-                    <div class="card-title" style="color: var(--gold);"><i class="ti ti-alert-circle"></i> Ketentuan Persyaratan Latsar CPNS 2026</div>
-                    <div style="font-size: 13px; color: var(--text1); line-height: 1.6;">
-                        <ol style="margin: 0; padding-left: 16px;">
-                            <li>Bagi Pria wajib memangkas Rambut (1 cm).</li>
-                            <li>Bagi Wanita tidak diperkenankan memakai rambut sambung serta mewarnai rambut.</li>
-                            <li>Spesifikasi Pas Foto: Berukuran 4x6, berasio 472x709 pixel (kurang dari 1MB), berlatar belakang merah.</li>
-                            <li>Dokumen fisik diserahkan saat klasikal, dokumen digital WAJIB diunggah pada portal ini sesuai batas waktu (Gelombang Pertama paling lambat 13 Mei 2026 jam 23:59 WIT).</li>
-                        </ol>
-                    </div>
-                </div>
-
                 <div class="doc-toolbar" id="doc-toolbar">
                     <!-- Diisi dinamis oleh JS -->
                 </div>
-                <div class="doc-grid" id="doc-grid" style="margin-bottom: 24px;"></div>
-                
-                <div class="card" id="custom-upload-section">
-                    <div class="card-title"><i class="ti ti-upload"></i> Upload Berkas Tambahan</div>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
-                        <div style="flex: 1; min-width: 200px;">
-                            <label style="font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px;">Nama Berkas/Dokumen</label>
-                            <input type="text" id="custom-doc-name" class="input-box" placeholder="Contoh: Surat Izin Belajar" style="width: 100%;">
-                        </div>
-                        <div style="flex: 1; min-width: 200px;">
-                            <label style="font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px;">Pilih File (PDF/JPG/PNG)</label>
-                            <input type="file" id="custom-doc-file" class="input-box" style="width: 100%; padding: 7px 16px;">
-                        </div>
-                        <button class="btn btn-primary" onclick="uploadCustomFile()" style="height: 38px;">
-                            <i class="ti ti-cloud-upload"></i> Upload Sekarang
-                        </button>
-                    </div>
-                </div>
+                <div class="doc-grid" id="doc-grid"></div>
             </div>
 
             <!-- MONITORING -->
             <div class="page" id="page-monitoring">
-                <div class="card" style="margin-bottom: 24px;">
+                <div class="card">
                     <div class="card-title"><i class="ti ti-chart-dots"></i> Statistik Progres Kelengkapan Dokumen</div>
-                    <canvas id="chart-monitoring" height="100"></canvas>
-                </div>
-                
-                <div class="card" style="padding: 0;">
-                    <div class="card-header" style="border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
-                        <div class="card-title" style="margin: 0;"><i class="ti ti-list-check"></i> Rincian Kelengkapan Berkas Peserta</div>
-                        <button class="btn btn-primary" onclick="initMonitoring()"><i class="ti ti-refresh"></i> Segarkan Data</button>
-                    </div>
-                    <div class="table-wrap" style="max-height: 600px; overflow-y: auto;">
-                        <table>
-                            <thead style="position: sticky; top: 0; background: var(--bg2); z-index: 10;">
-                                <tr>
-                                    <th>Nama / NIP</th>
-                                    <th>Gel.</th>
-                                    <th style="text-align:center">SK & SPMT</th>
-                                    <th style="text-align:center">KTP</th>
-                                    <th style="text-align:center">Bebas Tugas</th>
-                                    <th style="text-align:center">Surat Latsar</th>
-                                    <th style="text-align:center">Pas Foto</th>
-                                </tr>
-                            </thead>
-                            <tbody id="monitoring-list">
-                                <tr><td colspan="7" style="text-align:center; padding: 30px; color: var(--text2)">Memuat data kelengkapan...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- LAYANAN & PENGADUAN -->
-            <div class="page" id="page-layanan">
-                <div style="display: flex; gap: 24px; flex-wrap: wrap;">
-                    
-                    <div class="card" style="flex: 2; min-width: 300px;">
-                        <div class="card-title"><i class="ti ti-speakerphone"></i> Informasi & Pengumuman Panitia</div>
-                        <div class="timeline" id="pengumuman-list">
-                            <div class="tl-item">
-                                <div class="tl-label">11 Mei 2026</div>
-                                <div style="margin-left: 20px; padding: 15px; background: rgba(139,158,199,0.05); border-left: 3px solid var(--blue); border-radius: 4px;">
-                                    <h4 style="margin: 0 0 5px 0; color: #fff;">Batas Akhir Unggah Persyaratan Gelombang 1</h4>
-                                    <p style="margin: 0; font-size: 13px; color: var(--text2); line-height: 1.5;">Bagi seluruh peserta Gelombang 1 (Angkatan 1 & 2), diwajibkan untuk segera menyelesaikan proses unggah dokumen persyaratan dalam bentuk PDF paling lambat tanggal 13 Mei 2026 jam 23:59 WIT. Mohon cek kembali kebenaran berkas sebelum mengunggah.</p>
-                                </div>
-                            </div>
-                            <div class="tl-item">
-                                <div class="tl-label">08 Mei 2026</div>
-                                <div style="margin-left: 20px; padding: 15px; background: rgba(139,158,199,0.05); border-left: 3px solid var(--gold); border-radius: 4px;">
-                                    <h4 style="margin: 0 0 5px 0; color: #fff;">Ketentuan Pas Foto Kelulusan</h4>
-                                    <p style="margin: 0; font-size: 13px; color: var(--text2); line-height: 1.5;">Pas foto yang diunggah harus menggunakan latar belakang berwarna merah terang. Bagi peserta pria wajib mencukur rambut dengan panjang maksimal 1 cm. Peserta wanita yang tidak berjilbab wajib menata rambut dengan rapi tanpa pewarna.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card" style="flex: 1; min-width: 300px; align-self: start;">
-                        <div class="card-title"><i class="ti ti-mail-forward"></i> Kotak Saran & Aduan</div>
-                        <div class="card-desc" style="font-size: 12px; margin-bottom: 15px;">Sampaikan kendala, pertanyaan, atau saran seputar kegiatan LATSAR langsung kepada panitia BPSDM.</div>
-                        <form id="form-aduan" onsubmit="kirimAduan(event)">
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Subjek/Topik</label>
-                                <select id="aduan-topik" class="select-box" style="width: 100%; margin-bottom: 12px;" required>
-                                    <option value="">Pilih Topik...</option>
-                                    <option value="Kendala Sistem/Upload">Kendala Sistem/Upload</option>
-                                    <option value="Pertanyaan Persyaratan">Pertanyaan Persyaratan</option>
-                                    <option value="Saran/Masukan Umum">Saran/Masukan Umum</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Pesan Anda</label>
-                                <textarea id="aduan-pesan" class="input-box" style="width: 100%; height: 100px; resize: vertical; margin-bottom: 12px; font-family: inherit;" placeholder="Tuliskan kendala atau pertanyaan Anda secara detail..." required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" id="btn-aduan" style="width: 100%; justify-content: center;"><i class="ti ti-send"></i> Kirim Pesan</button>
-                        </form>
-                        
-                        <div id="aduan-admin-view" style="display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-                            <div class="card-title"><i class="ti ti-inbox"></i> Kotak Masuk (Hak Akses Admin)</div>
-                            <div id="aduan-list-admin" style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto;">
-                                <div style="text-align: center; color: var(--text2); font-size: 12px; padding: 20px;">Belum ada pesan masuk.</div>
-                            </div>
-                        </div>
-                    </div>
+                    <canvas id="chart-monitoring" height="300"></canvas>
                 </div>
             </div>
 
@@ -596,11 +390,12 @@
     ];
 
     const DOCS = [
-        {name:'Fotocopy SK CPNS & SPMT', cat:'required', desc:'1 Lembar Fotocopy SK CPNS dan SPMT yang digabungkan (Format PDF).'},
-        {name:'Fotocopy KTP', cat:'required', desc:'1 Lembar Kartu Tanda Penduduk (Format Gambar/PDF).'},
-        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi bebas tugas dari instansi/OPD (Format PDF).', template: '/assets/docs/Format_Surat_Bebas_Tugas.docx'},
-        {name:'Surat Pernyataan Bersedia Mengikuti LATSAR', cat:'required', desc:'Surat Pernyataan Mematuhi Semua Peraturan LATSAR. Tanda tangan bermaterai 10000 (Format PDF).', template: '/assets/docs/Format_Surat_Bersedia_Latsar.docx'},
-        {name:'Pas Foto Latar Merah (4x6)', cat:'required', desc:'Pas Foto 4x6 (Rasio 472x709 px, Latar belakang merah) (Format Gambar).'}
+        {name:'SK CPNS', cat:'required', desc:'Dokumen SK CPNS (Format PDF).'},
+        {name:'SPMT', cat:'required', desc:'Surat Pernyataan Melaksanakan Tugas (Format PDF).'},
+        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi dari instansi/OPD (Format PDF).'},
+        {name:'Surat Pernyataan Mengikuti Latsar', cat:'required', desc:'Wajib bermaterai 10000 (Format PDF).'},
+        {name:'KTP', cat:'required', desc:'Kartu Tanda Penduduk (Format Gambar).'},
+        {name:'PAS FOTO (4X6)', cat:'optional', desc:'Pas foto terbaru (Format Gambar).'}
     ];
 
     async function checkAuth() {
@@ -611,10 +406,6 @@
         }
         const user = JSON.parse(localStorage.getItem('user'));
         document.getElementById('user-avatar').innerText = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-        
-        // Populate dashboard welcome banner
-        const dashName = document.getElementById('dash-user-name');
-        if(dashName) dashName.innerText = user.name;
 
         if (user.role !== 'admin') {
             document.getElementById('menu-monitoring').style.display = 'none';
@@ -655,8 +446,6 @@
         document.getElementById('page-title').innerText = navEl.innerText;
         if (window.innerWidth <= 900) toggleMenu(); // auto close sidebar on mobile
         if (pageId === 'monitoring') initMonitoring();
-        if (pageId === 'dokumen') initDocs();
-        if (pageId === 'layanan') loadAduanAdmin();
     }
 
     function toggleMenu() {
@@ -700,26 +489,11 @@
         renderPeserta(participants);
 
         if (!isAdmin && participants.length > 0) {
+            // Fill bio form with their own data
             const p = participants[0];
-            
-            // Tampilkan dan Isi Kartu Profil
-            document.getElementById('profile-card').style.display = 'block';
-            document.getElementById('profile-nama').innerText = p.nama;
-            document.getElementById('profile-nip').innerText = p.nip;
-            document.getElementById('profile-gol').innerText = p.golongan;
-            document.getElementById('profile-gel').innerText = 'Gelombang ' + p.gelombang;
-            document.getElementById('profile-avatar').innerText = p.nama.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-
-            // Isi form biodata lengkap
             document.getElementById('bio-email').value = p.email || '';
             document.getElementById('bio-instansi').value = p.instansi || '';
             document.getElementById('bio-hp').value = p.no_hp || '';
-            document.getElementById('bio-jabatan').value = p.jabatan || '';
-            document.getElementById('bio-tmp-lahir').value = p.tempat_lahir || '';
-            document.getElementById('bio-tgl-lahir').value = p.tanggal_lahir || '';
-            document.getElementById('bio-jk').value = p.jenis_kelamin || '';
-            document.getElementById('bio-agama').value = p.agama || '';
-            document.getElementById('bio-pendidikan').value = p.pendidikan || '';
         }
     }
 
@@ -748,7 +522,6 @@
         // Golongan distribution from fetched participants
         const participantResult = await apiFetch('/peserta?limit=1000');
         const allParticipants = participantResult.data || [];
-        
         const golMap = {};
         allParticipants.forEach(p => { golMap[p.golongan] = (golMap[p.golongan] || 0) + 1; });
         
@@ -760,7 +533,7 @@
                 labels: Object.keys(golMap),
                 datasets: [{
                     data: Object.values(golMap),
-                    backgroundColor: ['#EF9F27', '#378ADD', '#1D9E75', '#E24B4A', '#885FAC', '#A32D2D'],
+                    backgroundColor: ['#EF9F27', '#378ADD', '#1D9E75', '#E24B4A'],
                     borderWidth: 0
                 }]
             },
@@ -787,145 +560,19 @@
                 plugins: { legend: { display: false } }
             }
         });
-        
-        // Monitoring Stats
-        window._docsCount = stats ? stats.docsCount : [];
-        window._totalPeserta = stats ? stats.totalPeserta : 0;
     }
 
-    async function initMonitoring() {
-        const mCtx = document.getElementById('chart-monitoring').getContext('2d');
-        if (charts.monitoring) charts.monitoring.destroy();
-
-        const labels = DOCS.map(d => d.name);
-        const data = labels.map(l => {
-            const f = window._docsCount.find(x => x.jenis_dokumen === l);
-            return f ? parseInt(f.jumlah) : 0;
-        });
-
-        const customDocs = window._docsCount.filter(x => !labels.includes(x.jenis_dokumen)).reduce((a,b)=>a+parseInt(b.jumlah),0);
-        labels.push('Berkas Tambahan');
-        data.push(customDocs);
-
-        charts.monitoring = new Chart(mCtx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Jumlah File Diunggah',
-                    data: data,
-                    backgroundColor: '#1D9E75'
-                }]
-            },
-            options: {
-                scales: {
-                    y: { ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    x: { ticks: { color: '#8B9EC7', font: {size: 10} }, grid: { display: false } }
-                },
-                plugins: { legend: { display: false } }
-            }
-        });
-
-        // Render Table Monitoring (Detailed)
-        try {
-            const tbody = document.getElementById('monitoring-list');
-            if (!tbody) return;
-
-            const docsRes = await apiFetch('/dokumen');
-            const allUploaded = Array.isArray(docsRes) ? docsRes : [];
-            
-            if (_allPeserta.length === 0) {
-                const res = await apiFetch('/peserta?limit=1500');
-                _allPeserta = res.data || [];
-            }
-
-            tbody.innerHTML = _allPeserta.map(p => {
-                const myDocs = allUploaded.filter(d => d.peserta_nip === p.nip.replace(/\s+/g,''));
-                const checkDoc = (docName) => myDocs.some(d => d.jenis_dokumen === docName) 
-                    ? '<i class="ti ti-check" style="color:var(--green); font-size:18px; font-weight:bold;"></i>' 
-                    : '<i class="ti ti-x" style="color:var(--red); font-size:18px; font-weight:bold;"></i>';
-
-                return `
-                    <tr>
-                        <td>
-                            <div style="font-weight:600">${p.nama}</div>
-                            <div style="font-size:11px; color:var(--text2); font-family:monospace;">${p.nip}</div>
-                        </td>
-                        <td><span class="badge badge-green">${p.gelombang}</span></td>
-                        <td style="text-align:center">${checkDoc(DOCS[0].name)}</td>
-                        <td style="text-align:center">${checkDoc(DOCS[1].name)}</td>
-                        <td style="text-align:center">${checkDoc(DOCS[2].name)}</td>
-                        <td style="text-align:center">${checkDoc(DOCS[3].name)}</td>
-                        <td style="text-align:center">${checkDoc(DOCS[4].name)}</td>
-                    </tr>
-                `;
-            }).join('');
-        } catch (e) {
-            console.error('Failed to load detailed monitoring:', e);
-        }
-    }
-
-    let timerInterval;
     function initJadwal() {
         const tbody = document.getElementById('jadwal-list');
         tbody.innerHTML = WAVES.map(w => `
             <tr>
                 <td><span class="badge" style="background:${w.color}22; color:${w.color}">${w.id}</span></td>
                 <td>Angkatan ${w.ang}</td>
+                <td>Mei 2026</td>
                 <td>${w.start} 2026</td>
                 <td>${w.end} 2026</td>
             </tr>
         `).join('');
-
-        if (timerInterval) clearInterval(timerInterval);
-        
-        // Timer Logic
-        const months = {'Mei':4, 'Jun':5, 'Jul':6, 'Agu':7, 'Sep':8, 'Okt':9};
-        const now = new Date().getTime();
-        
-        let nextWave = null;
-        let nextDateStr = null;
-
-        for (let w of WAVES) {
-            const parts = w.start.split(' ');
-            const day = parseInt(parts[0]);
-            const monthStr = parts[1];
-            const m = months[monthStr] !== undefined ? months[monthStr] : 4;
-            const targetDate = new Date(2026, m, day, 8, 0, 0).getTime();
-            if (targetDate > now) {
-                nextWave = w;
-                nextDateStr = targetDate;
-                break;
-            }
-        }
-
-        if (!nextWave) {
-            document.getElementById('jadwal-timer-target').innerText = "Seluruh Gelombang Telah Selesai!";
-            return;
-        }
-
-        document.getElementById('jadwal-timer-target').innerText = `Menuju Pelaksanaan ${nextWave.label} (${nextWave.start} 2026)`;
-
-        timerInterval = setInterval(() => {
-            const current = new Date().getTime();
-            const distance = nextDateStr - current;
-
-            if (distance < 0) {
-                clearInterval(timerInterval);
-                initJadwal(); // Recalculate next wave
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
-            document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
-            document.getElementById('timer-mins').innerText = String(minutes).padStart(2, '0');
-            document.getElementById('timer-secs').innerText = String(seconds).padStart(2, '0');
-        }, 1000);
     }
 
     // ── TOAST ────────────────────────────────────────────────────────────────
@@ -956,13 +603,6 @@
         const email = document.getElementById('bio-email').value;
         const instansi = document.getElementById('bio-instansi').value;
         const no_hp = document.getElementById('bio-hp').value;
-        const jabatan = document.getElementById('bio-jabatan').value;
-        const tmp_lahir = document.getElementById('bio-tmp-lahir').value;
-        const tgl_lahir = document.getElementById('bio-tgl-lahir').value;
-        const jk = document.getElementById('bio-jk').value;
-        const agama = document.getElementById('bio-agama').value;
-        const pendidikan = document.getElementById('bio-pendidikan').value;
-
         const btn = document.getElementById('btn-save-bio');
 
         try {
@@ -972,12 +612,7 @@
             const res = await apiFetch('/peserta/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    nip: targetNip, 
-                    email, instansi, no_hp,
-                    jabatan, tempat_lahir: tmp_lahir, tanggal_lahir: tgl_lahir,
-                    jenis_kelamin: jk, agama, pendidikan
-                })
+                body: JSON.stringify({ nip: targetNip, email, instansi, no_hp })
             });
 
             if (res.error) throw new Error(res.error);
@@ -987,14 +622,16 @@
             if (isAdmin && _allPeserta.length > 0) {
                 const idx = _allPeserta.findIndex(p => p.nip.replace(/\s+/g,'') === targetNip);
                 if (idx !== -1) {
-                    _allPeserta[idx] = { ..._allPeserta[idx], email, instansi, no_hp, jabatan, tempat_lahir: tmp_lahir, tanggal_lahir: tgl_lahir, jenis_kelamin: jk, agama, pendidikan };
+                    _allPeserta[idx].email = email;
+                    _allPeserta[idx].instansi = instansi;
+                    _allPeserta[idx].no_hp = no_hp;
                 }
             }
         } catch (err) {
             console.error(err);
             showToast(err.message || 'Gagal menyimpan data diri', 'error');
         } finally {
-            btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Profil`;
+            btn.innerHTML = `<i class="ti ti-device-floppy"></i> Simpan Data Diri`;
             btn.disabled = false;
         }
     }
@@ -1060,16 +697,6 @@
                 ? `<div class="status-badge status-uploaded"><i class="ti ti-check"></i> Sudah Diunggah</div>`
                 : `<div class="status-badge status-pending"><i class="ti ti-clock"></i> Belum Ada File</div>`;
             const sid = safeId(d.name);
-            
-            let templateBtnHtml = '';
-            if (d.template) {
-                templateBtnHtml = `
-                    <a href="${d.template}" class="btn" style="background: rgba(239,159,39,0.1); color: var(--gold); font-size: 11px; padding: 6px 12px; margin-bottom: 12px; border: 1px solid rgba(239,159,39,0.3); width: 100%;" target="_blank">
-                        <i class="ti ti-download"></i> Unduh Format Surat
-                    </a>
-                `;
-            }
-
             return `
                 <div class="doc-card ${d.cat}">
                     <div class="doc-icon"><i class="ti ti-file-text"></i></div>
@@ -1079,10 +706,9 @@
                         <span class="badge ${d.cat === 'required' ? 'badge-red' : 'badge-green'}">${d.cat === 'required' ? 'Wajib' : 'Opsional'}</span>
                         ${statusHtml}
                     </div>
-                    <div class="upload-area" style="display: flex; flex-direction: column; gap: 8px;">
-                        ${templateBtnHtml}
+                    <div class="upload-area">
                         <input type="file" id="inp-${sid}" class="upload-input" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadFile('${d.name}', '${sid}')">
-                        <button class="btn btn-primary upload-btn" onclick="document.getElementById('inp-${sid}').click()" style="width: 100%;">
+                        <button class="btn btn-primary upload-btn" onclick="document.getElementById('inp-${sid}').click()">
                             <i class="ti ti-upload"></i> ${uploaded ? 'Ganti Berkas' : 'Unggah Berkas'}
                         </button>
                     </div>
@@ -1127,137 +753,33 @@
             initDocs();
         } catch (err) {
             showToast('Gagal mengunggah: ' + err.message, 'error');
-        } finally {
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-    }
-
-    async function uploadCustomFile() {
-        const nameInput = document.getElementById('custom-doc-name');
-        const fileInput = document.getElementById('custom-doc-file');
-        const docName = nameInput.value.trim();
-        
-        if (!docName) return showToast('Harap isi nama dokumen terlebih dahulu', 'error');
-        if (!fileInput.files || fileInput.files.length === 0) return showToast('Harap pilih file', 'error');
-        
-        // Create an invisible file input to use existing uploadFile logic, or directly call upload API
-        const user = JSON.parse(localStorage.getItem('user'));
-        const isAdmin = user.role === 'admin';
-        const nipToUse = isAdmin ? _selectedNip : user.username;
-        if (!nipToUse) return showToast('Pilih peserta terlebih dahulu', 'error');
-
-        const formData = new FormData();
-        formData.append('file', fileInput.files[0]);
-        formData.append('peserta_nip', nipToUse);
-        formData.append('jenis_dokumen', docName);
-
-        try {
-            showToast('Mengunggah berkas tambahan...', 'info');
-            const result = await apiFetch('/dokumen/upload', { method: 'POST', body: formData });
-            if (result.error) throw new Error(result.error);
-            showToast('Berhasil mengunggah berkas: ' + docName, 'success');
-            nameInput.value = '';
-            fileInput.value = '';
-            initDocs();
-        } catch (err) {
-            showToast('Gagal mengunggah: ' + err.message, 'error');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
         }
     }
 
     function initMonitoring() {
-        if (!window._totalPeserta) return;
-        const total = window._totalPeserta;
-        
-        // Calculate progress percentage based on required docs: SK CPNS, SPMT, KTP, Surat Pernyataan Latsar, Surat Bebas Tugas
-        const requiredDocs = DOCS.filter(d => d.cat === 'required').map(d => d.name);
-        const mapCount = {};
-        if (window._docsCount) {
-            window._docsCount.forEach(d => { mapCount[d.jenis_dokumen] = parseInt(d.jumlah); });
-        }
-        
-        // Create an array of progress (dummy timeline but ending in real calculated progress)
-        const currentProgress = requiredDocs.reduce((acc, name) => acc + (mapCount[name] || 0), 0) / (total * requiredDocs.length) * 100;
-        
         const mCtx = document.getElementById('chart-monitoring').getContext('2d');
         if (charts.monitoring) charts.monitoring.destroy();
         charts.monitoring = new Chart(mCtx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: requiredDocs,
+                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
                 datasets: [{
-                    label: 'Peserta yang telah Unggah',
-                    data: requiredDocs.map(name => mapCount[name] || 0),
-                    backgroundColor: '#1D9E75',
+                    label: 'Kelengkapan Dokumen (%)',
+                    data: [12, 45, 68, 85],
+                    borderColor: '#EF9F27',
+                    tension: 0.4
                 }]
             },
             options: {
                 scales: {
-                    y: { max: total, beginAtZero: true, ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    x: { ticks: { color: '#8B9EC7', font: {size: 10} }, grid: { display: false } }
-                },
-                plugins: {
-                    legend: { labels: { color: '#8B9EC7' } }
+                    y: { beginAtZero: true, ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { ticks: { color: '#8B9EC7' }, grid: { display: false } }
                 }
             }
         });
     }
-
-    // ── ADUAN & PENGUMUMAN ───────────────────────────────────────────────────
-    async function kirimAduan(e) {
-        e.preventDefault();
-        const topik = document.getElementById('aduan-topik').value;
-        const pesan = document.getElementById('aduan-pesan').value;
-        const btn = document.getElementById('btn-aduan');
-        
-        btn.innerHTML = `<i class="ti ti-loader" style="animation: spin 1s linear infinite"></i> Mengirim...`;
-        btn.disabled = true;
-
-        try {
-            const res = await apiFetch('/aduan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ topik, pesan })
-            });
-            if (res.error) throw new Error(res.error);
-            showToast('Pesan Anda berhasil dikirim ke panitia', 'success');
-            document.getElementById('form-aduan').reset();
-            
-            // If admin, refresh list
-            const user = JSON.parse(localStorage.getItem('user'));
-            if (user.role === 'admin') loadAduanAdmin();
-        } catch(err) {
-            showToast(err.message || 'Gagal mengirim pesan', 'error');
-        } finally {
-            btn.innerHTML = `<i class="ti ti-send"></i> Kirim Pesan`;
-            btn.disabled = false;
-        }
-    }
-
-    async function loadAduanAdmin() {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user.role !== 'admin') return;
-        
-        document.getElementById('aduan-admin-view').style.display = 'block';
-        try {
-            const res = await apiFetch('/aduan');
-            if (res && res.data && res.data.length > 0) {
-                document.getElementById('aduan-list-admin').innerHTML = res.data.map(a => `
-                    <div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 6px; font-size: 12px;">
-                        <div style="display:flex; justify-content: space-between; margin-bottom: 4px;">
-                            <strong style="color:var(--gold)">${a.nama_pengirim}</strong>
-                            <span style="color:var(--text2)">${new Date(a.tanggal).toLocaleDateString('id-ID')}</span>
-                        </div>
-                        <div style="color:var(--blue); margin-bottom: 4px;">Topik: ${a.topik}</div>
-                        <div style="color: #fff; line-height: 1.4; word-break: break-word;">${a.pesan}</div>
-                    </div>
-                `).join('');
-            }
-        } catch(err) {
-            console.error('Failed to load aduan', err);
-        }
     }
 
     // ── INIT APP ─────────────────────────────────────────────────────────────
