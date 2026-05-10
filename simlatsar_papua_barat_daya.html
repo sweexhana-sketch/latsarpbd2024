@@ -540,8 +540,8 @@
     const DOCS = [
         {name:'Fotocopy SK CPNS & SPMT', cat:'required', desc:'1 Lembar Fotocopy SK CPNS dan SPMT yang digabungkan (Format PDF).'},
         {name:'Fotocopy KTP', cat:'required', desc:'1 Lembar Kartu Tanda Penduduk (Format Gambar/PDF).'},
-        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi bebas tugas dari instansi/OPD (Format PDF).'},
-        {name:'Surat Pernyataan Bersedia Mengikuti LATSAR', cat:'required', desc:'Surat Pernyataan Mematuhi Semua Peraturan LATSAR. Tanda tangan bermaterai 10000 (Format PDF).'},
+        {name:'Surat Pernyataan Bebas Tugas Dari OPD', cat:'required', desc:'Surat resmi bebas tugas dari instansi/OPD (Format PDF).', template: '/assets/docs/Format_Surat_Bebas_Tugas.docx'},
+        {name:'Surat Pernyataan Bersedia Mengikuti LATSAR', cat:'required', desc:'Surat Pernyataan Mematuhi Semua Peraturan LATSAR. Tanda tangan bermaterai 10000 (Format PDF).', template: '/assets/docs/Format_Surat_Bersedia_Latsar.docx'},
         {name:'Pas Foto Latar Merah (4x6)', cat:'required', desc:'Pas Foto 4x6 (Rasio 472x709 px, Latar belakang merah) (Format Gambar).'}
     ];
 
@@ -1000,6 +1000,16 @@
                 ? `<div class="status-badge status-uploaded"><i class="ti ti-check"></i> Sudah Diunggah</div>`
                 : `<div class="status-badge status-pending"><i class="ti ti-clock"></i> Belum Ada File</div>`;
             const sid = safeId(d.name);
+            
+            let templateBtnHtml = '';
+            if (d.template) {
+                templateBtnHtml = `
+                    <a href="${d.template}" class="btn" style="background: rgba(239,159,39,0.1); color: var(--gold); font-size: 11px; padding: 6px 12px; margin-bottom: 12px; border: 1px solid rgba(239,159,39,0.3); width: 100%;" target="_blank">
+                        <i class="ti ti-download"></i> Unduh Format Surat
+                    </a>
+                `;
+            }
+
             return `
                 <div class="doc-card ${d.cat}">
                     <div class="doc-icon"><i class="ti ti-file-text"></i></div>
@@ -1009,9 +1019,10 @@
                         <span class="badge ${d.cat === 'required' ? 'badge-red' : 'badge-green'}">${d.cat === 'required' ? 'Wajib' : 'Opsional'}</span>
                         ${statusHtml}
                     </div>
-                    <div class="upload-area">
+                    <div class="upload-area" style="display: flex; flex-direction: column; gap: 8px;">
+                        ${templateBtnHtml}
                         <input type="file" id="inp-${sid}" class="upload-input" accept=".pdf,.jpg,.jpeg,.png" onchange="uploadFile('${d.name}', '${sid}')">
-                        <button class="btn btn-primary upload-btn" onclick="document.getElementById('inp-${sid}').click()">
+                        <button class="btn btn-primary upload-btn" onclick="document.getElementById('inp-${sid}').click()" style="width: 100%;">
                             <i class="ti ti-upload"></i> ${uploaded ? 'Ganti Berkas' : 'Unggah Berkas'}
                         </button>
                     </div>
