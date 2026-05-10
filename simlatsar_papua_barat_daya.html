@@ -205,9 +205,9 @@
             <a class="nav-item" id="menu-jadwal" onclick="showPage('jadwal', this)">
                 <i class="ti ti-calendar"></i><span>Jadwal Latsar</span>
             </a>
-            <div class="nav-section">Laporan</div>
+            <div class="nav-section">Laporan & Berkas</div>
             <a class="nav-item" id="menu-dokumen" onclick="showPage('dokumen', this)">
-                <i class="ti ti-files"></i><span>Persyaratan Dokumen</span>
+                <i class="ti ti-files"></i><span>Persyaratan & Upload Berkas</span>
             </a>
             <a class="nav-item" id="menu-monitoring" onclick="showPage('monitoring', this)">
                 <i class="ti ti-chart-line"></i><span>Monitoring</span>
@@ -355,6 +355,29 @@
 
             <!-- JADWAL -->
             <div class="page" id="page-jadwal">
+                <div class="card" style="background: linear-gradient(135deg, var(--navy-light), var(--bg3)); border-color: var(--gold); text-align: center;">
+                    <div style="font-size: 14px; font-weight: 600; color: var(--gold); margin-bottom: 8px;">DIGITAL COUNTDOWN TIMER LATSAR CPNS 2026</div>
+                    <div id="jadwal-timer-target" style="font-size: 16px; margin-bottom: 16px; color: #fff;">Menghitung jadwal berikutnya...</div>
+                    <div id="jadwal-timer" style="display: flex; justify-content: center; gap: 16px;">
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
+                            <div id="timer-days" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
+                            <div style="font-size: 11px; color: var(--gold);">HARI</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
+                            <div id="timer-hours" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
+                            <div style="font-size: 11px; color: var(--gold);">JAM</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
+                            <div id="timer-mins" style="font-size: 32px; font-weight: 800; color: #fff;">00</div>
+                            <div style="font-size: 11px; color: var(--gold);">MENIT</div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; min-width: 80px;">
+                            <div id="timer-secs" style="font-size: 32px; font-weight: 800; color: var(--red);">00</div>
+                            <div style="font-size: 11px; color: var(--gold);">DETIK</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-title"><i class="ti ti-calendar-time"></i> Ringkasan Jadwal 7 Gelombang</div>
                     <div class="table-wrap">
@@ -393,7 +416,24 @@
                 <div class="doc-toolbar" id="doc-toolbar">
                     <!-- Diisi dinamis oleh JS -->
                 </div>
-                <div class="doc-grid" id="doc-grid"></div>
+                <div class="doc-grid" id="doc-grid" style="margin-bottom: 24px;"></div>
+                
+                <div class="card" id="custom-upload-section">
+                    <div class="card-title"><i class="ti ti-upload"></i> Upload Berkas Tambahan</div>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px;">Nama Berkas/Dokumen</label>
+                            <input type="text" id="custom-doc-name" class="input-box" placeholder="Contoh: Surat Izin Belajar" style="width: 100%;">
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <label style="font-size: 11px; color: var(--text2); display: block; margin-bottom: 4px;">Pilih File (PDF/JPG/PNG)</label>
+                            <input type="file" id="custom-doc-file" class="input-box" style="width: 100%; padding: 7px 16px;">
+                        </div>
+                        <button class="btn btn-primary" onclick="uploadCustomFile()" style="height: 38px;">
+                            <i class="ti ti-cloud-upload"></i> Upload Sekarang
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- MONITORING -->
@@ -635,6 +675,7 @@
         window._totalPeserta = stats.totalPeserta || 0;
     }
 
+    let timerInterval;
     function initJadwal() {
         const tbody = document.getElementById('jadwal-list');
         tbody.innerHTML = WAVES.map(w => `
@@ -645,6 +686,56 @@
                 <td>${w.end} 2026</td>
             </tr>
         `).join('');
+
+        if (timerInterval) clearInterval(timerInterval);
+        
+        // Timer Logic
+        const months = {'Mei':4, 'Jun':5, 'Jul':6, 'Agu':7, 'Sep':8, 'Okt':9};
+        const now = new Date().getTime();
+        
+        let nextWave = null;
+        let nextDateStr = null;
+
+        for (let w of WAVES) {
+            const parts = w.start.split(' ');
+            const day = parseInt(parts[0]);
+            const monthStr = parts[1];
+            const m = months[monthStr] !== undefined ? months[monthStr] : 4;
+            const targetDate = new Date(2026, m, day, 8, 0, 0).getTime();
+            if (targetDate > now) {
+                nextWave = w;
+                nextDateStr = targetDate;
+                break;
+            }
+        }
+
+        if (!nextWave) {
+            document.getElementById('jadwal-timer-target').innerText = "Seluruh Gelombang Telah Selesai!";
+            return;
+        }
+
+        document.getElementById('jadwal-timer-target').innerText = `Menuju Pelaksanaan ${nextWave.label} (${nextWave.start} 2026)`;
+
+        timerInterval = setInterval(() => {
+            const current = new Date().getTime();
+            const distance = nextDateStr - current;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                initJadwal(); // Recalculate next wave
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
+            document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('timer-mins').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('timer-secs').innerText = String(seconds).padStart(2, '0');
+        }, 1000);
     }
 
     // ── TOAST ────────────────────────────────────────────────────────────────
@@ -825,8 +916,43 @@
             initDocs();
         } catch (err) {
             showToast('Gagal mengunggah: ' + err.message, 'error');
-            btn.disabled = false;
-            btn.innerHTML = originalText;
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+    }
+
+    async function uploadCustomFile() {
+        const nameInput = document.getElementById('custom-doc-name');
+        const fileInput = document.getElementById('custom-doc-file');
+        const docName = nameInput.value.trim();
+        
+        if (!docName) return showToast('Harap isi nama dokumen terlebih dahulu', 'error');
+        if (!fileInput.files || fileInput.files.length === 0) return showToast('Harap pilih file', 'error');
+        
+        // Create an invisible file input to use existing uploadFile logic, or directly call upload API
+        const user = JSON.parse(localStorage.getItem('user'));
+        const isAdmin = user.role === 'admin';
+        const nipToUse = isAdmin ? _selectedNip : user.username;
+        if (!nipToUse) return showToast('Pilih peserta terlebih dahulu', 'error');
+
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('peserta_nip', nipToUse);
+        formData.append('jenis_dokumen', docName);
+
+        try {
+            showToast('Mengunggah berkas tambahan...', 'info');
+            const result = await apiFetch('/dokumen/upload', { method: 'POST', body: formData });
+            if (result.error) throw new Error(result.error);
+            showToast('Berhasil mengunggah berkas: ' + docName, 'success');
+            nameInput.value = '';
+            fileInput.value = '';
+            initDocs();
+        } catch (err) {
+            showToast('Gagal mengunggah: ' + err.message, 'error');
         }
     }
 
