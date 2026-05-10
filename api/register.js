@@ -17,8 +17,8 @@ module.exports = async (req, res) => {
   const pool = getPool();
   
   try {
-    // 1. Check if NIP exists in Master Data Peserta
-    const { rows: pesertaRows } = await pool.query('SELECT * FROM peserta WHERE nip = $1', [cleanNip]);
+    // 1. Check if NIP exists in Master Data Peserta (mengabaikan spasi di DB)
+    const { rows: pesertaRows } = await pool.query("SELECT * FROM peserta WHERE REPLACE(nip, ' ', '') = $1", [cleanNip]);
     if (pesertaRows.length === 0) {
       return res.status(404).json({ error: 'NIP tidak ditemukan dalam database LATSAR. Hubungi panitia BPSDM.' });
     }
@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
     }
 
     // 4. Save their active email to the peserta table
-    await pool.query('UPDATE peserta SET email = $1 WHERE nip = $2', [email, cleanNip]);
+    await pool.query("UPDATE peserta SET email = $1 WHERE REPLACE(nip, ' ', '') = $2", [email, cleanNip]);
 
     // 5. Automatically log them in by returning a token
     const token = jwt.sign(
