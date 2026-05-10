@@ -498,10 +498,16 @@
     }
 
     async function initDashboard() {
-        const stats = await apiFetch('/stats');
-        document.getElementById('stat-peserta').innerText = stats.totalPeserta || 0;
-        document.getElementById('stat-angkatan').innerText = stats.totalAngkatan || 26;
-        document.getElementById('stat-gelombang').innerText = stats.totalGelombang || 7;
+        try {
+            const stats = await apiFetch('/stats');
+            if (stats && !stats.error) {
+                document.getElementById('stat-peserta').innerText = stats.totalPeserta || 0;
+                document.getElementById('stat-angkatan').innerText = stats.totalAngkatan || 26;
+                document.getElementById('stat-gelombang').innerText = stats.totalGelombang || 7;
+            }
+        } catch (err) {
+            console.error('Failed to load dashboard stats:', err);
+        }
 
         const tl = document.getElementById('dashboard-timeline');
         tl.innerHTML = WAVES.map(w => `
@@ -786,7 +792,7 @@
                 const now = new Date();
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', options);
-                initDashboard();
+                await initDashboard();
                 initJadwal();
                 await filterPeserta();
                 initDocs();

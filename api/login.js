@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
       { id: user.id, username: user.username, name: user.name, role: user.role },
       SECRET, { expiresIn: '8h' }
     );
-    res.json({ token, user: { id: user.id, name: user.name, role: user.role } });
+    res.json({ token, user: { id: user.id, username: user.username, name: user.name, role: user.role } });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
