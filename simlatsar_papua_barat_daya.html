@@ -235,22 +235,22 @@
             <!-- DASHBOARD -->
             <div class="page active" id="page-dashboard">
                 <div class="grid-stats">
-                    <div class="stat-card blue">
+                    <div class="stat-card blue" style="cursor:pointer" onclick="showPage('peserta', document.getElementById('menu-peserta'))">
                         <div class="stat-icon blue"><i class="ti ti-users"></i></div>
                         <div class="stat-value" id="stat-peserta">0</div>
                         <div class="stat-label">Total Peserta CPNS</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" style="cursor:pointer" onclick="showPage('jadwal', document.getElementById('menu-jadwal'))">
                         <div class="stat-icon gold"><i class="ti ti-layers-linked"></i></div>
                         <div class="stat-value" id="stat-angkatan">0</div>
                         <div class="stat-label">Angkatan Pelatihan</div>
                     </div>
-                    <div class="stat-card green">
+                    <div class="stat-card green" style="cursor:pointer" onclick="showPage('jadwal', document.getElementById('menu-jadwal'))">
                         <div class="stat-icon green"><i class="ti ti-wave-sine"></i></div>
                         <div class="stat-value" id="stat-gelombang">0</div>
                         <div class="stat-label">Gelombang Latsar</div>
                     </div>
-                    <div class="stat-card red">
+                    <div class="stat-card red" style="cursor:pointer" onclick="if(document.getElementById('menu-monitoring').style.display !== 'none') showPage('monitoring', document.getElementById('menu-monitoring'))">
                         <div class="stat-icon red"><i class="ti ti-calendar-event"></i></div>
                         <div class="stat-value">Mei - Sep</div>
                         <div class="stat-label">Periode Tahun 2026</div>
@@ -272,6 +272,27 @@
                     <div class="card">
                         <div class="card-title"><i class="ti ti-chart-bar"></i> Peserta per Gelombang</div>
                         <canvas id="chart-gelombang" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header" style="justify-content: space-between; display: flex;">
+                        <div class="card-title"><i class="ti ti-users"></i> Cuplikan Data Pegawai (Peserta)</div>
+                        <button class="btn btn-primary" onclick="showPage('peserta', document.getElementById('menu-peserta'))">Lihat Seluruh Data</button>
+                    </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nama</th>
+                                    <th>NIP</th>
+                                    <th>Pangkat / Golongan</th>
+                                    <th>Gel.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-peserta-list"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -522,6 +543,19 @@
         // Golongan distribution from fetched participants
         const participantResult = await apiFetch('/peserta?limit=1000');
         const allParticipants = participantResult.data || [];
+        
+        // Render 5 participants snippet to dashboard
+        const dashBody = document.getElementById('dashboard-peserta-list');
+        dashBody.innerHTML = allParticipants.slice(0, 5).map((p, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td style="font-weight:600">${p.nama}</td>
+                <td style="font-family: monospace; color: var(--text2)">${p.nip}</td>
+                <td><span class="badge ${p.golongan.includes('III/a') ? 'badge-blue' : 'badge-gold'}">${p.golongan}</span></td>
+                <td><span class="badge badge-green">Gel. ${p.gelombang}</span></td>
+            </tr>
+        `).join('');
+
         const golMap = {};
         allParticipants.forEach(p => { golMap[p.golongan] = (golMap[p.golongan] || 0) + 1; });
         
@@ -533,7 +567,7 @@
                 labels: Object.keys(golMap),
                 datasets: [{
                     data: Object.values(golMap),
-                    backgroundColor: ['#EF9F27', '#378ADD', '#1D9E75', '#E24B4A'],
+                    backgroundColor: ['#EF9F27', '#378ADD', '#1D9E75', '#E24B4A', '#885FAC', '#A32D2D'],
                     borderWidth: 0
                 }]
             },
@@ -560,6 +594,10 @@
                 plugins: { legend: { display: false } }
             }
         });
+        
+        // Monitoring Stats
+        window._docsCount = stats.docsCount || [];
+        window._totalPeserta = stats.totalPeserta || 0;
     }
 
     function initJadwal() {
@@ -759,23 +797,38 @@
     }
 
     function initMonitoring() {
+        if (!window._totalPeserta) return;
+        const total = window._totalPeserta;
+        
+        // Calculate progress percentage based on required docs: SK CPNS, SPMT, KTP, Surat Pernyataan Latsar, Surat Bebas Tugas
+        const requiredDocs = DOCS.filter(d => d.cat === 'required').map(d => d.name);
+        const mapCount = {};
+        if (window._docsCount) {
+            window._docsCount.forEach(d => { mapCount[d.jenis_dokumen] = parseInt(d.jumlah); });
+        }
+        
+        // Create an array of progress (dummy timeline but ending in real calculated progress)
+        const currentProgress = requiredDocs.reduce((acc, name) => acc + (mapCount[name] || 0), 0) / (total * requiredDocs.length) * 100;
+        
         const mCtx = document.getElementById('chart-monitoring').getContext('2d');
         if (charts.monitoring) charts.monitoring.destroy();
         charts.monitoring = new Chart(mCtx, {
-            type: 'line',
+            type: 'bar',
             data: {
-                labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+                labels: requiredDocs,
                 datasets: [{
-                    label: 'Kelengkapan Dokumen (%)',
-                    data: [12, 45, 68, 85],
-                    borderColor: '#EF9F27',
-                    tension: 0.4
+                    label: 'Peserta yang telah Unggah',
+                    data: requiredDocs.map(name => mapCount[name] || 0),
+                    backgroundColor: '#1D9E75',
                 }]
             },
             options: {
                 scales: {
-                    y: { beginAtZero: true, ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                    x: { ticks: { color: '#8B9EC7' }, grid: { display: false } }
+                    y: { max: total, beginAtZero: true, ticks: { color: '#8B9EC7' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                    x: { ticks: { color: '#8B9EC7', font: {size: 10} }, grid: { display: false } }
+                },
+                plugins: {
+                    legend: { labels: { color: '#8B9EC7' } }
                 }
             }
         });

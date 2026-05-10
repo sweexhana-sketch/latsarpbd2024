@@ -9,17 +9,19 @@ module.exports = async (req, res) => {
 
   const pool = getPool();
   try {
-    const [total, byGel, byGol] = await Promise.all([
+    const [total, byGel, byGol, docs] = await Promise.all([
       pool.query('SELECT COUNT(*) AS total FROM peserta'),
       pool.query('SELECT gelombang, COUNT(*) AS jumlah FROM peserta GROUP BY gelombang ORDER BY gelombang'),
-      pool.query('SELECT golongan, COUNT(*) AS jumlah FROM peserta GROUP BY golongan')
+      pool.query('SELECT golongan, COUNT(*) AS jumlah FROM peserta GROUP BY golongan'),
+      pool.query('SELECT jenis_dokumen, COUNT(*) AS jumlah FROM dokumen GROUP BY jenis_dokumen')
     ]);
     res.json({
       totalPeserta: parseInt(total.rows[0].total),
       totalAngkatan: 26,
       totalGelombang: 7,
       byGelombang: byGel.rows,
-      byGolongan: byGol.rows
+      byGolongan: byGol.rows,
+      docsCount: docs.rows
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
